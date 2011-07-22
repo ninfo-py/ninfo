@@ -30,10 +30,10 @@ class PluginBase(object):
 
 class Ninfo:
     def __init__(self, config_file=None):
-        self.plugin_modules = {}
-        for ep in iter_entry_points(group='ninfo.plugin'):
-            self.plugin_modules[ep.name] = ep
         self.plugins = {}
+        for ep in iter_entry_points(group='ninfo.plugin'):
+            self.plugins[ep.name] = ep
+        self.plugin_modules = {}
         self.plugin_instances = {}
 
         self.read_config(config_file)
@@ -55,11 +55,11 @@ class Ninfo:
         self.config = dict((s, dict(cp.items(s))) for s in cp.sections())
 
     def get_plugin(self, plugin):
-        if plugin in self.plugins:
-            return self.plugins[plugin]
+        if plugin in self.plugin_modules:
+            return self.plugin_modules[plugin]
 
-        p = self.plugin_modules[plugin].load().plugin_class
-        self.plugins[plugin] = p
+        p = self.plugins[plugin].load().plugin_class
+        self.plugin_modules[plugin] = p
         return p
     
     def get_inst(self, plugin):
