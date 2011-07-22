@@ -7,6 +7,7 @@ class cymru_whois(PluginBase):
     description = 'cymruwhois'
     long_description = 'This plugin returns the owners name and ASN of this ip'
     types = ['ip']
+    local = False
 
     def setup(self):
         self.c=cymruwhois.Client()

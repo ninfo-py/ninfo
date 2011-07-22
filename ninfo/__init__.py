@@ -13,6 +13,9 @@ from mako.template import Template
 
 import inspect
 
+from ninfo import util
+import IPy
+
 class PluginBase(object):
 
     cache_timeout = 60*60
@@ -74,11 +77,6 @@ class Ninfo:
         self.plugin_instances = {}
 
         self.read_config(config_file)
-        self.cache_host = self.config['general'].get('memcache_host')
-        if self.cache_host:
-            self.cache = memcache.Client([self.cache_host])
-        else:
-            self.cache = None
 
     def read_config(self, config_file):
         cp = ConfigParser.ConfigParser()
@@ -90,6 +88,31 @@ class Ninfo:
             cp.read(["ninfo.ini","/etc/ninfo.ini"])
         #return a simple nested dictionary structure from the config
         self.config = dict((s, dict(cp.items(s))) for s in cp.sections())
+
+        self.cache_host = self.config['general'].get('memcache_host')
+        if self.cache_host:
+            self.cache = memcache.Client([self.cache_host])
+        else:
+            self.cache = None
+
+        networks_str = self.config['general'].get('local_networks','')
+        self.local_networks = [IPy.IP(n) for n in networks_str.split(",")]
+
+    def is_local(self, arg):
+        if util.get_type(arg) != "ip":
+            return False
+
+        return util.is_local(self.local_networks, arg)
+
+    def compatible_argument(self, plugin, arg):
+        plug = self.get_plugin(plugin)
+        if plug.local == False and self.is_local(arg):
+            logger.debug("Skipping plugin %s because arg is local" % plugin)
+            return False
+        if util.get_type(arg) not in plug.types:
+            logger.debug("Skipping plugin %s because arg is the wrong type" % plugin)
+            return False
+        return True
 
     def get_plugin(self, plugin):
         if plugin in self.plugin_modules:
@@ -109,6 +132,8 @@ class Ninfo:
 
     def get_info(self, plugin, arg):
         """Call `plugin` with `arg` and cache and return the result"""
+        if not self.compatible_argument(plugin, arg):
+            return None
         if self.cache:
             KEY = 'ninfo:%s:%s' % (plugin, arg)
             ret = self.cache.get(KEY)
@@ -145,9 +170,12 @@ class Ninfo:
 
     def get_info_iter(self, arg):
         for p in self.plugins:
-            plug = self.get_inst(p)
+            inst = self.get_inst(p)
+            plugin = self.get_plugin(p)
+            if not self.compatible_argument(p, arg):
+                continue
             result = self.get_info(p, arg)
-            yield plug, result
+            yield inst, result
 
     def get_info_dict(self, arg):
         res = {}
@@ -161,8 +189,7 @@ class Ninfo:
             print p.render_template('text',arg, result)
 
 def main():
-    logging.basicConfig()
+    logging.basicConfig(level=logging.DEBUG)
     arg = sys.argv[1]
     p=Ninfo()
     p.show_info(arg)
-
