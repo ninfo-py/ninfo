@@ -145,7 +145,8 @@ class Ninfo:
 
     def show_info(self, arg):
         for p in self.plugins:
-            print p
+            plug = self.get_plugin(p)
+            print '*** %s (%s) ***' % (plug.name, plug.description)
             print self.get_info_text(p, arg)
 
 def main():
