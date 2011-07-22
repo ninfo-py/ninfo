@@ -2,6 +2,10 @@ import sys
 from pkg_resources import iter_entry_points
 
 class PluginBase(object):
+
+    cachetimeout = 60*60
+    local = True
+
     def __init__(self, config=None):
         if config is None:
             config = {}
