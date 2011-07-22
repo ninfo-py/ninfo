@@ -11,8 +11,6 @@ class geoip(PluginBase):
         name = self.g.country_name_by_addr(ip)
         return dict(code=code, name=name)
 
-    get_info_json = get_info
-
 plugin = {
     'name':         'geoip',
     'title':        'geoip',

@@ -4,3 +4,9 @@ class PluginBase(object):
             config = {}
         self.config = config
         self.setup()
+
+    def setup(self):
+        pass
+
+    def get_info_json(self, arg):
+        return self.get_info(arg)
