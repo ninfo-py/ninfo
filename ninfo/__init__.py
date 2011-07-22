@@ -150,6 +150,10 @@ class Ninfo:
         self.plugin_instances[plugin] = instance
         return instance
 
+    @property
+    def plugin_classes(self):
+        return [self.get_plugin(p) for p in self.plugins]
+
     def get_info(self, plugin, arg):
         """Call `plugin` with `arg` and cache and return the result"""
         if not self.compatible_argument(plugin, arg):
