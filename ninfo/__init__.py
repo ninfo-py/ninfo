@@ -36,19 +36,34 @@ class PluginBase(object):
 
     def get_info_text(self, arg):
         result = self.get_info(arg)
-        return self.render_template('text', result)
+        return self.render_template('text', arg, result)
 
     def get_info_html(self, arg):
         result = self.get_info(arg)
-        return self.render_template('html', result)
+        return self.render_template('html', arg, result)
 
-    def render_template(self, output_type, result):
-        return result
+    def render_template(self, output_type, arg, result):
+        filename = self.get_template(output_type)
+        if filename is None and output_type == 'html':
+            filename = self.get_template('text')
+            t = Template(filename=filename)
+            out = t.render(arg=arg, config=self.config, **result)
+            return "<pre>" + out + "</pre>"
+
+        if filename is None:
+            return str(result)
+
+        t = Template(filename=filename)
+        out = t.render(arg=arg, config=self.config, **result)
+        return out
 
     def get_template(self, output_type):
         code = inspect.getsourcefile(self.__class__)
         path = os.path.dirname(code)
-        template = os.path.join(
+        filename = "%s_template_%s.mako" % (self.name, output_type)
+        template = os.path.join(path, filename)
+        if os.path.exists(template):
+            return template
 
 class Ninfo:
     def __init__(self, config_file=None):
@@ -120,13 +135,13 @@ class Ninfo:
         result = self.get_info(plugin, arg)
 
         p = self.get_inst(plugin)
-        return p.render_template('text', result)
+        return p.render_template('text', arg, result)
 
     def get_info_html(self, plugin, arg):
         result = self.get_info(plugin, arg)
 
         p = self.get_inst(plugin)
-        return p.render_template('html', result)
+        return p.render_template('html', arg, result)
 
     def show_info(self, arg):
         for p in self.plugins:
