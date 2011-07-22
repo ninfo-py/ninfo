@@ -5,7 +5,6 @@ setup(name='ninfo',
     version='0.1.0',
     zip_safe=False,
     packages = ['ninfo', 'ninfo.plugins'],
-    package_data = { '': ['*.mako'] },
     install_requires=[
         "Mako",
         "python-memcached",
