@@ -22,10 +22,13 @@ class PluginBase(object):
     local = True
     template = True
 
-    def __init__(self, config=None):
+    def __init__(self, config=None, plugin_config=None):
         if config is None:
             config = {}
+        if plugin_config is None:
+            plugin_config = {}
         self.config = config
+        self.plugin_config = plugin_config
         self.setup()
 
     def setup(self):
@@ -123,7 +126,11 @@ class Ninfo:
         if plugin in self.plugin_modules:
             return self.plugin_modules[plugin]
 
-        p = self.plugins[plugin].load().plugin_class
+        try :
+            p = self.plugins[plugin].load().plugin_class
+        except ImportError, e:
+            logger.exception("Error loading plugin %s" % plugin)
+            return
         self.plugin_modules[plugin] = p
         return p
     
@@ -131,7 +138,13 @@ class Ninfo:
         if plugin in self.plugin_instances:
             return self.plugin_instances[plugin]
 
-        instance = self.get_plugin(plugin)()
+        plugin_config_key = 'plugin:' + plugin
+        plugin_config = self.config.get(plugin_config_key, {})
+
+        klass = self.get_plugin(plugin)
+        if not klass:
+            return
+        instance = klass(config=self.config, plugin_config=plugin_config)
         self.plugin_instances[plugin] = instance
         return instance
 
@@ -176,7 +189,7 @@ class Ninfo:
     def get_info_iter(self, arg):
         for p in self.plugins:
             inst = self.get_inst(p)
-            plugin = self.get_plugin(p)
+            if not inst: continue
             if not self.compatible_argument(p, arg):
                 continue
             result = self.get_info(p, arg)
