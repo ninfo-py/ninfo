@@ -13,7 +13,10 @@ def get_type(arg):
         return 'mac'
     if isip(arg):
         return 'ip'
-    return 'hostname'
+    if '.' in arg:
+        return 'hostname'
+    
+    return 'username'
 
 def is_local(config, ip):
     network_str = config['general']['local_networks']
