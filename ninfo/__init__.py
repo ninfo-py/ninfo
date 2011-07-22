@@ -41,3 +41,7 @@ class Ninfo:
         instance = self.get_plugin(plugin)()
         self.plugin_instances[plugin] = instance
         return instance
+
+    def get_info(self, plugin, arg):
+        instance = self.get_inst(plugin)
+        return instance.get_info(arg)
