@@ -18,7 +18,7 @@ class whois(PluginBase):
         output = output.decode('ascii','ignore')
         return dict(status=status,output=output)
 
-    def render_template(kls, output_type, result):
+    def render_template(self, output_type, arg, result):
         if output_type == 'text':
             return result['output']
         else:
