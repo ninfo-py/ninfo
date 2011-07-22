@@ -89,6 +89,11 @@ class Ninfo:
         #return a simple nested dictionary structure from the config
         self.config = dict((s, dict(cp.items(s))) for s in cp.sections())
 
+        if 'general' not in self.config:
+            self.cache = None
+            self.local_networks = []
+            return
+
         self.cache_host = self.config['general'].get('memcache_host')
         if self.cache_host:
             self.cache = memcache.Client([self.cache_host])
