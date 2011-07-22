@@ -3,8 +3,8 @@ import cymruwhois
 
 class cymru_whois(PluginBase):
     name = 'cymruwhois'
-    title = 'cymruwhois'
-    description = 'cymruwhois'
+    title = 'Cymru Whois'
+    description = 'Cymru Whois lookup'
     long_description = 'This plugin returns the owners name and ASN of this ip'
     types = ['ip']
     local = False
