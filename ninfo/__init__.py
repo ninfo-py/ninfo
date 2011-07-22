@@ -11,6 +11,8 @@ import ConfigParser
 
 from mako.template import Template
 
+import inspect
+
 class PluginBase(object):
 
     cache_timeout = 60*60
@@ -42,6 +44,11 @@ class PluginBase(object):
 
     def render_template(self, output_type, result):
         return result
+
+    def get_template(self, output_type):
+        code = inspect.getsourcefile(self.__class__)
+        path = os.path.dirname(code)
+        template = os.path.join(
 
 class Ninfo:
     def __init__(self, config_file=None):
