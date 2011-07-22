@@ -18,11 +18,8 @@ def get_type(arg):
     
     return 'username'
 
-def is_local(config, ip):
-    network_str = config['general']['local_networks']
-    networks = network_str.split(",")
-    nets = [IPy.IP(n) for n in networks]
-    for n in nets:
+def is_local(networks, ip):
+    for n in networks:
         if ip in n:
             return True
     return False
