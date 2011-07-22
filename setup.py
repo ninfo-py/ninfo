@@ -10,6 +10,7 @@ setup(name='ninfo',
         "Mako",
         "python-memcached",
         "ieeemac",
+        "cymruwhois",
         "IPy",
     ],
     entry_points = {
@@ -19,6 +20,7 @@ setup(name='ninfo',
         'ninfo.plugin': [
             'whois = ninfo.plugins.whois_plugin',
             'geoip = ninfo.plugins.geoip_plugin',
+            'cymruwhois = ninfo.plugins.cymruwhois_plugin',
         ]
     }
 ) 
