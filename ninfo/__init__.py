@@ -143,11 +143,22 @@ class Ninfo:
         p = self.get_inst(plugin)
         return p.render_template('html', arg, result)
 
-    def show_info(self, arg):
+    def get_info_iter(self, arg):
         for p in self.plugins:
-            plug = self.get_plugin(p)
-            print '*** %s (%s) ***' % (plug.name, plug.description)
-            print self.get_info_text(p, arg)
+            plug = self.get_inst(p)
+            result = self.get_info(p, arg)
+            yield plug, result
+
+    def get_info_dict(self, arg):
+        res = {}
+        for p, result in self.get_info_iter(arg):
+            res[p.name] = result
+        return res
+
+    def show_info(self, arg):
+        for p, result in self.get_info_iter(arg):
+            print '*** %s (%s) ***' % (p.name, p.description)
+            print p.render_template('text',arg, result)
 
 def main():
     logging.basicConfig()
