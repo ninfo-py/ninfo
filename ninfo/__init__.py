@@ -48,19 +48,21 @@ class PluginBase(object):
         result = self.get_info(arg)
         return self.render_template('html', arg, result)
 
+    def _do_render(self, filename, arg, result):
+        t = Template(filename=filename)
+        return t.render(arg=arg, config=self.config, plugin_config=self.plugin_config, **result)
+
     def render_template(self, output_type, arg, result):
         filename = self.get_template(output_type)
         if filename is None and output_type == 'html':
             filename = self.get_template('text')
-            t = Template(filename=filename)
-            out = t.render(arg=arg, config=self.config, **result)
+            out = self._do_render(filename, arg, result)
             return "<pre>" + out + "</pre>"
 
         if filename is None:
             return str(result)
 
-        t = Template(filename=filename)
-        out = t.render(arg=arg, config=self.config, **result)
+        out = self._do_render(filename, arg, result)
         return out
 
     def get_template(self, output_type):
