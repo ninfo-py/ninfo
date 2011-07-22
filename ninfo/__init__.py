@@ -18,12 +18,26 @@ class PluginBase(object):
     def get_info_json(self, arg):
         return self.get_info(arg)
 
-def main():
-    arg = sys.argv[1]
-    for ep in iter_entry_points(group='ninfo.plugin'):
-        plugin = ep.load()
-        title = plugin.plugin['title']
-        instance = plugin.plugin['class']()
+class Ninfo:
+    def __init__(self):
+        self.plugin_modules = {}
+        for ep in iter_entry_points(group='ninfo.plugin'):
+            self.plugin_modules[ep.name] = ep
+        self.plugins = {}
+        self.plugin_instances = {}
 
-        print title
-        print instance.get_info(arg)
+    def get_plugin(self, plugin):
+        if plugin in self.plugins:
+            return self.plugins[plugin]
+
+        p = self.plugin_modules[plugin].load().plugin_class
+        self.plugins[plugin] = p
+        return p
+    
+    def get_inst(self, plugin):
+        if plugin in self.plugin_instances:
+            return self.plugin_instances[plugin]
+
+        instance = self.get_plugin(plugin)()
+        self.plugin_instances[plugin] = instance
+        return instance
