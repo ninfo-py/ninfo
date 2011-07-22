@@ -17,8 +17,8 @@ setup(name='ninfo',
             'ninfo-main = ninfo:main',
         ],
         'ninfo.plugin': [
-            'whois = ninfo.plugins.whois_plugin',
-            'geoip = ninfo.plugins.geoip_plugin',
+            'whois = ninfo.plugins.plugin_whois',
+            'geoip = ninfo.plugins.plugin_geoip',
         ]
     }
 ) 

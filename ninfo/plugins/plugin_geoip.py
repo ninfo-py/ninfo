@@ -1,7 +1,6 @@
 import GeoIP
 from ninfo import util
 from ninfo import PluginBase
-import os
 
 class geoip(PluginBase):
     name = "geoip"
