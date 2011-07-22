@@ -19,6 +19,8 @@ class whois(PluginBase):
         return dict(status=status,output=output)
 
     def render_template(self, output_type, arg, result):
+        if not result:
+            return ''
         if output_type == 'text':
             return result['output']
         else:
