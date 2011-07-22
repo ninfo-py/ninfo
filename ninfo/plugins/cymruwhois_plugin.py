@@ -15,7 +15,6 @@ class cymru_whois(PluginBase):
     def get_info(self, ip):
         #Don't bother looking up on-campus hosts
         info = self.c.lookup(ip)
-        self.c.disconnect()
         return info.__dict__
 
 plugin_class = cymru_whois
