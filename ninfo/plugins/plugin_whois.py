@@ -5,8 +5,8 @@ class whois(PluginBase):
     name =         'whois'
     title =        'whois'
     description =  'whois'
-    longdescription =  'This plugin returns the output of the whois program for this ip'
-    cachetimeout =   60*60
+    long_description =  'This plugin returns the output of the whois program for this ip'
+    cache_timeout =   60*60
     types =     ['ip','hostname']
     local =     False
 

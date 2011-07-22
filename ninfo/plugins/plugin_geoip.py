@@ -6,8 +6,8 @@ class geoip(PluginBase):
     name = "geoip"
     title = "GeoIP"
     description = "GeoIP"
-    longdescription = "This plugin returns the location of this ip"
-    cachetimeout = 60*60
+    long_description = "This plugin returns the location of this ip"
+    cache_timeout = 60*60
     types = ['ip']
     local = False
 
