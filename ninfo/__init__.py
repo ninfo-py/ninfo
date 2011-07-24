@@ -167,7 +167,7 @@ class Ninfo:
 
     @property
     def plugin_classes(self):
-        return [self.get_plugin(p) for p in self.plugins.keys()]
+        return [self.get_plugin(p) for p in sorted(self.plugins.keys())]
 
     def get_info(self, plugin, arg):
         """Call `plugin` with `arg` and cache and return the result"""
@@ -208,7 +208,7 @@ class Ninfo:
         return p.render_template('html', arg, result)
 
     def get_info_iter(self, arg):
-        for p in self.plugins.keys():
+        for p in sorted(self.plugins.keys()):
             inst = self.get_inst(p)
             if not inst: continue
             if not self.compatible_argument(p, arg):
