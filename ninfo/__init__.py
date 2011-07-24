@@ -231,4 +231,8 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     arg = sys.argv[1]
     p=Ninfo()
-    p.show_info(arg)
+    if arg == "list-plugins":
+        for pl in p.plugin_classes:
+            print "%-20s %s" %(pl.title, pl.description)
+    else :
+        p.show_info(arg)
