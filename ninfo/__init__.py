@@ -20,6 +20,7 @@ class PluginBase(object):
 
     cache_timeout = 60*60
     local = True
+    remote = True
     template = True
 
     def __init__(self, config=None, plugin_config=None):
@@ -124,6 +125,9 @@ class Ninfo:
         plug = self.get_plugin(plugin)
         if plug.local == False and self.is_local(arg):
             logger.debug("Skipping plugin %s because arg is local" % plugin)
+            return False
+        if plug.remote == False and not self.is_local(arg):
+            logger.debug("Skipping plugin %s because arg is remote" % plugin)
             return False
         if util.get_type(arg) not in plug.types:
             logger.debug("Skipping plugin %s because arg is the wrong type" % plugin)
