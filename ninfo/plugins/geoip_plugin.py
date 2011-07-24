@@ -14,6 +14,7 @@ class geoip(PluginBase):
 
     def setup(self):
         self.g=GeoIP.new(GeoIP.GEOIP_STANDARD)
+        return True
 
     def get_info(self, ip):
         code = self.g.country_code_by_addr(ip)

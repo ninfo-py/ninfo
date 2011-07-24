@@ -29,10 +29,14 @@ class PluginBase(object):
             plugin_config = {}
         self.config = config
         self.plugin_config = plugin_config
-        self.setup()
+        try :
+            self.initialized=self.setup()
+        except:
+            logger.exception("Error loading plugin %s" % self.name)
+            self.initialized=False
 
     def setup(self):
-        pass
+        return True
 
     def to_json(self, result):
         return result
@@ -50,9 +54,11 @@ class PluginBase(object):
 
     def _do_render(self, filename, arg, result):
         t = Template(filename=filename)
-        return t.render(arg=arg, config=self.config, plugin_config=self.plugin_config, **result)
+        return t.render(arg=arg, plugin=self, config=self.config, plugin_config=self.plugin_config, **result)
 
     def render_template(self, output_type, arg, result):
+        if not result:
+            return ''
         filename = self.get_template(output_type)
         if filename is None and output_type == 'html':
             filename = self.get_template('text')
@@ -147,12 +153,17 @@ class Ninfo:
         if not klass:
             return
         instance = klass(config=self.config, plugin_config=plugin_config)
+        if not instance.initialized:
+            #plugin loading failed
+            del self.plugins[plugin]
+            del self.plugin_modules[plugin]
+            return None
         self.plugin_instances[plugin] = instance
         return instance
 
     @property
     def plugin_classes(self):
-        return [self.get_plugin(p) for p in self.plugins]
+        return [self.get_plugin(p) for p in self.plugins.keys()]
 
     def get_info(self, plugin, arg):
         """Call `plugin` with `arg` and cache and return the result"""
@@ -193,7 +204,7 @@ class Ninfo:
         return p.render_template('html', arg, result)
 
     def get_info_iter(self, arg):
-        for p in self.plugins:
+        for p in self.plugins.keys():
             inst = self.get_inst(p)
             if not inst: continue
             if not self.compatible_argument(p, arg):
