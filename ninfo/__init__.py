@@ -215,8 +215,10 @@ class Ninfo:
         p = self.get_inst(plugin)
         return p.render_template('html', arg, result)
 
-    def get_info_iter(self, arg):
+    def get_info_iter(self, arg, plugins=None):
         for p in sorted(self.plugins.keys()):
+            if plugins and p not in plugins:
+                continue
             inst = self.get_inst(p)
             if not inst: continue
             if not self.compatible_argument(p, arg):
@@ -230,17 +232,31 @@ class Ninfo:
             res[p.name] = result
         return res
 
-    def show_info(self, arg):
-        for p, result in self.get_info_iter(arg):
+    def show_info(self, arg, plugins=None):
+        for p, result in self.get_info_iter(arg, plugins):
             print '*** %s (%s) ***' % (p.name, p.description)
             print p.render_template('text',arg, result)
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
-    arg = sys.argv[1]
+
+    from optparse import OptionParser
+    parser = OptionParser(usage = "usage: %prog [options] [addresses]")
+    parser.add_option("-p", "--plugin", dest="plugins", action="append", default=None)
+    parser.add_option("-l", "--list", dest="list", action="store_true", default=False)
+    (options, args) = parser.parse_args()
     p=Ninfo()
-    if arg == "list-plugins":
+    if options.list:
+        print "%-20s %-20s %s" %("Name", "Title", "Description")
         for pl in p.plugin_classes:
-            print "%-20s %s" %(pl.title, pl.description)
+            print "%-20s %-20s %s" %(pl.name, pl.title, pl.description)
+        return
     else :
-        p.show_info(arg)
+        plugins = options.plugins or None
+        for arg in args:
+            if len(args) != 1:
+                print "=== %s === " % (arg)
+            p.show_info(arg, plugins=plugins)
+
+if __name__ == "__main__":
+    main()
