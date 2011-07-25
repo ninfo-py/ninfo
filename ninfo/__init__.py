@@ -31,7 +31,7 @@ class PluginBase(object):
         self.config = config
         self.plugin_config = plugin_config
         try :
-            self.initialized=self.setup()
+            self.initialized = (self.setup() != False)
         except:
             logger.exception("Error loading plugin %s" % self.name)
             self.initialized=False
