@@ -158,7 +158,7 @@ class Ninfo:
             return
         instance = klass(config=self.config, plugin_config=plugin_config)
         if not instance.initialized:
-            #plugin loading failed
+            logger.debug("removing plugin %s because initialization failed" % plugin)
             del self.plugins[plugin]
             del self.plugin_modules[plugin]
             return None
@@ -192,6 +192,7 @@ class Ninfo:
 
     def get_info_json(self, plugin, arg):
         result = self.get_info(plugin, arg)
+
         p = self.get_inst(plugin)
         return p.to_json(result)
 
