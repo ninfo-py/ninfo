@@ -140,7 +140,7 @@ class Ninfo:
 
         try :
             p = self.plugins[plugin].load().plugin_class
-        except ImportError, e:
+        except Exception, e:
             logger.exception("Error loading plugin %s" % plugin)
             return
         self.plugin_modules[plugin] = p
