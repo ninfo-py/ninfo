@@ -64,7 +64,9 @@ class PluginBase(object):
         if filename is None and output_type == 'html':
             filename = self.get_template('text')
             out = self._do_render(filename, arg, result)
-            return "<pre>" + out + "</pre>"
+            if out:
+                out = "<pre>" + out + "</pre>"
+            return out
 
         if filename is None:
             return str(result)
