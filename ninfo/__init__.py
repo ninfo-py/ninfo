@@ -142,6 +142,7 @@ class Ninfo:
             p = self.plugins[plugin].load().plugin_class
         except Exception, e:
             logger.exception("Error loading plugin %s" % plugin)
+            del self.plugins[plugin]
             return
         self.plugin_modules[plugin] = p
         return p
@@ -167,7 +168,8 @@ class Ninfo:
 
     @property
     def plugin_classes(self):
-        return [self.get_plugin(p) for p in sorted(self.plugins.keys())]
+        plugins = [self.get_plugin(p) for p in sorted(self.plugins.keys())]
+        return [p for p in plugins if p]
 
     def get_info(self, plugin, arg):
         """Call `plugin` with `arg` and cache and return the result"""
