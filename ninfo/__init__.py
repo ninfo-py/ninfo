@@ -135,6 +135,8 @@ class Ninfo:
         return True
 
     def get_plugin(self, plugin):
+        if plugin not in self.plugins:
+            return None
         if plugin in self.plugin_modules:
             return self.plugin_modules[plugin]
 
@@ -142,7 +144,8 @@ class Ninfo:
             p = self.plugins[plugin].load().plugin_class
         except Exception, e:
             logger.exception("Error loading plugin %s" % plugin)
-            del self.plugins[plugin]
+            if plugin in self.plugins:
+                del self.plugins[plugin]
             return
         self.plugin_modules[plugin] = p
         return p
