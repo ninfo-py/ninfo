@@ -30,11 +30,14 @@ class PluginBase(object):
             plugin_config = {}
         self.config = config
         self.plugin_config = plugin_config
+        self.initialized = False
+        if 'disabled' in plugin_config:
+            return
+
         try :
             self.initialized = (self.setup() != False)
         except:
             logger.exception("Error loading plugin %s" % self.name)
-            self.initialized=False
 
     def setup(self):
         return True
