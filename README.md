@@ -4,6 +4,7 @@ nInfo
 nInfo is a tool and framework (and lots of plugins) for gathering information on an
 
  * IP Address
+ * MAC Address
  * Hostname
  * Username
 
