@@ -113,7 +113,7 @@ Plugin Metadata
       memcache, and the max-age parameter sent by the web interface.
 * types - A list of one or more of 'mac', 'ip', 'hostname', 'username'.
 * local - if False, this plugin will not be ran against local hosts.
-* remote - if True, this plugin will not be ran against remote hosts.
+* remote - if False, this plugin will not be ran against remote hosts.
 
 See Also
 --------
