@@ -240,7 +240,7 @@ class Ninfo:
 
     def show_info(self, arg, plugins=None):
         for p, result in self.get_info_iter(arg, plugins):
-            print '*** %s (%s) ***' % (p.name, p.description)
+            print '*** %s (%s) ***' % (p.title, p.description)
             print p.render_template('text',arg, result)
 
 def main():
