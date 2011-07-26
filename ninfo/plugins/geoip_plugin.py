@@ -4,10 +4,11 @@ from ninfo import PluginBase
 import os
 
 class geoip(PluginBase):
+    """This plugin returns the location of this ip"""
+
     name = "geoip"
     title = "GeoIP"
     description = "GeoIP"
-    long_description = "This plugin returns the location of this ip"
     cache_timeout = 60*60
     types = ['ip']
     local = False

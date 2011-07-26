@@ -2,10 +2,11 @@ from ninfo import PluginBase
 import cymruwhois
 
 class cymru_whois(PluginBase):
+    """This plugin returns the owners name and ASN of this ip"""
+
     name = 'cymruwhois'
     title = 'Cymru Whois'
     description = 'Cymru Whois lookup'
-    long_description = 'This plugin returns the owners name and ASN of this ip'
     types = ['ip']
     local = False
 

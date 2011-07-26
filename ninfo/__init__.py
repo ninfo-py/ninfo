@@ -39,6 +39,8 @@ class PluginBase(object):
         except:
             logger.exception("Error loading plugin %s" % self.name)
 
+        self.long_desription = self.__doc__
+
     def setup(self):
         return True
 
@@ -147,6 +149,7 @@ class Ninfo:
 
         try :
             p = self.plugins[plugin].load().plugin_class
+            p.long_description = p.__doc__
         except Exception, e:
             logger.exception("Error loading plugin %s" % plugin)
             if plugin in self.plugins:
