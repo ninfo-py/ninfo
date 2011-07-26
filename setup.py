@@ -15,7 +15,7 @@ setup(name='ninfo',
     ],
     entry_points = {
         'console_scripts': [
-            'ninfo-main = ninfo:main',
+            'ninfo = ninfo:main',
         ],
         'ninfo.plugin': [
             'whois = ninfo.plugins.whois_plugin',
