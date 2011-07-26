@@ -30,7 +30,7 @@ Getting information
 
 Silly example, run two plugins against two addreses:
 
-    $ ninfo -p geoip -p cymruwhois 8.8.8.8 4.2.2.2                                           2011-07-26 10:36:14 justin pts/15
+    $ ninfo -p geoip -p cymruwhois 8.8.8.8 4.2.2.2
     === 8.8.8.8 === 
     *** Cymru Whois (Cymru Whois lookup) ***
     15169 US 8.8.8.0/24 GOOGLE - Google Inc.
