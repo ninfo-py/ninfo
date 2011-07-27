@@ -1,12 +1,13 @@
 import ieeemac
-import re
 import IPy
 
-ipregex = r"(?P<ip>((25[0-5]|2[0-4]\d|[01]\d\d|\d?\d)\.){3}(25[0-5]|2[0-4]\d|[01]\d\d|\d?\d))$"
-ipregex = re.compile(ipregex)
 def isip(arg):
     """is arg an ip address?"""
-    return bool(ipregex.match(str(arg)))
+    try:
+        IPy.IP(arg)
+        return True
+    except ValueError:
+        return False
 
 def get_type(arg):
     if ieeemac.ismac(arg):
