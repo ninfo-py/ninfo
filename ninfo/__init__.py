@@ -41,6 +41,19 @@ class PluginBase(object):
 
         self.long_desription = self.__doc__
 
+    @classmethod
+    def as_json(self):
+        return {
+            'name': self.name,
+            'title': self.title,
+            'description': self.description,
+            'long_description': self.long_description,
+            'cache_timeout': self.cache_timeout,
+            'types': self.types,
+            'local': self.local,
+            'remote': self.remote,
+        }
+
     def setup(self):
         return True
 
