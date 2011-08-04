@@ -238,9 +238,10 @@ class Ninfo:
         for p in sorted(self.plugins.keys()):
             if plugins and p not in plugins:
                 continue
-            inst = self.get_inst(p)
-            if not inst: continue
             if not self.compatible_argument(p, arg):
+                continue
+            inst = self.get_inst(p)
+            if not inst:
                 continue
             result = self.get_info(p, arg)
             yield inst, result
