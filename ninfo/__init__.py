@@ -143,15 +143,18 @@ class Ninfo:
 
     def compatible_argument(self, plugin, arg):
         plug = self.get_plugin(plugin)
-        if util.get_type(arg) not in plug.types:
+        arg_type = util.get_type(arg)
+        if arg_type not in plug.types:
             logger.debug("Skipping plugin %s because arg is the wrong type" % plugin)
             return False
-        if plug.local == False and self.is_local(arg):
-            logger.debug("Skipping plugin %s because arg is local" % plugin)
-            return False
-        if plug.remote == False and not self.is_local(arg):
-            logger.debug("Skipping plugin %s because arg is remote" % plugin)
-            return False
+
+        if arg_type == 'ip':
+            if plug.local == False and self.is_local(arg):
+                logger.debug("Skipping plugin %s because arg is local" % plugin)
+                return False
+            if plug.remote == False and not self.is_local(arg):
+                logger.debug("Skipping plugin %s because arg is remote" % plugin)
+                return False
         return True
 
     def get_plugin(self, plugin):
