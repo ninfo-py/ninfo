@@ -72,7 +72,7 @@ class PluginBase(object):
         return self.render_template('html', arg, result)
 
     def _do_render(self, filename, arg, result):
-        t = Template(filename=filename)
+        t = Template(filename=filename, default_filters=['h'])
         return t.render(arg=arg, plugin=self, config=self.config, plugin_config=self.plugin_config, **result)
 
     def render_template(self, output_type, arg, result):
