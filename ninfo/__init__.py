@@ -121,6 +121,17 @@ class Ninfo:
         #return a simple nested dictionary structure from the config
         self.config = dict((s, dict(cp.items(s))) for s in cp.sections())
 
+        # Remove disabled plugins
+        for section in self.config:
+            if "disabled" in self.config[section]:
+                plugin_name = section.split(":")[1]
+                try:
+                    del self.plugins[plugin_name]
+                except KeyError:
+                    logger.debug("Plugin %s is disabled in .ini file, but was not found." % plugin_name)
+                else:
+                    logger.info("Plugin %s disabled via .ini file." % plugin_name)
+
         if 'general' not in self.config:
             self.cache = None
             self.local_networks = []
