@@ -3,7 +3,7 @@ from distutils.core import setup
 from glob import glob
 
 setup(name='ninfo',
-    version='0.1.0',
+    version='0.1.1',
     zip_safe=False,
     packages = find_packages(exclude=["tests"]),
     include_package_data=True,
