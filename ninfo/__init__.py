@@ -229,7 +229,8 @@ class Ninfo:
         except Exception, e:
             logger.exception("Error running plugin %s" % plugin)
             if retries:
-                del self.plugin_instances[plugin]
+                if plugin in self.plugin_instances:
+                    del self.plugin_instances[plugin]
                 return self.get_info(plugin, arg, retries-1)
             raise
 
