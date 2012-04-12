@@ -261,8 +261,11 @@ class Ninfo:
             inst = self.get_inst(p)
             if not inst:
                 continue
-            result = self.get_info(p, arg)
-            yield inst, result
+            try :
+                result = self.get_info(p, arg)
+                yield inst, result
+            except:
+                pass
 
     def get_info_dict(self, arg):
         res = {}
