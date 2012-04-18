@@ -212,20 +212,29 @@ class Ninfo:
         plugins = [self.get_plugin(p) for p in sorted(self.plugins.keys())]
         return [p for p in plugins if p]
 
-    def get_info(self, plugin, arg, retries=1):
-        """Call `plugin` with `arg` and cache and return the result"""
+    def get_info(self, plugin, arg, options, retries=1):
+        """Call `plugin` with `arg`, `options` and cache and return the result"""
         if not self.compatible_argument(plugin, arg):
             return None
         timeout = self.get_plugin(plugin).cache_timeout
         if self.cache and timeout:
             KEY = 'ninfo:%s:%s' % (plugin, arg)
+            KEY += ":".join(['%s=%s' % (key, value) for (key, value) in options.items()])
+            # Remove non-alphanumerics from key, to be safe
+            KEY = "".join([c for c in KEY if c.isalnum()])
             ret = self.cache.get(KEY)
             if ret:
                 return ret[1]
-
+            
         try:
             instance = self.get_inst(plugin)
-            ret = instance.get_info(arg)
+            get_info_args = len(inspect.getargspec(instance.get_info).args)
+            if get_info_args == 3:
+                # This plugin supports context.
+                ret = instance.get_info(arg, options)
+            else:
+                # This plugin doesn't.
+                ret = instance.get_info(arg)
             if self.cache and timeout:
                 self.cache.set(KEY, (True, ret), timeout)
             return ret
@@ -234,7 +243,7 @@ class Ninfo:
             if retries:
                 if plugin in self.plugin_instances:
                     del self.plugin_instances[plugin]
-                return self.get_info(plugin, arg, retries-1)
+                return self.get_info(plugin, arg, options, retries-1)
             raise
 
     def get_info_json(self, plugin, arg):
@@ -255,7 +264,7 @@ class Ninfo:
         p = self.get_inst(plugin)
         return p.render_template('html', arg, result)
 
-    def get_info_iter(self, arg, plugins=None):
+    def get_info_iter(self, arg, options, plugins=None):
         for p in sorted(self.plugins.keys()):
             if plugins and p not in plugins:
                 continue
@@ -265,7 +274,7 @@ class Ninfo:
             if not inst:
                 continue
             try :
-                result = self.get_info(p, arg)
+                result = self.get_info(p, arg, options)
                 yield inst, result
             except:
                 pass
@@ -276,8 +285,8 @@ class Ninfo:
             res[p.name] = result
         return res
 
-    def show_info(self, arg, plugins=None):
-        for p, result in self.get_info_iter(arg, plugins):
+    def show_info(self, arg, options, plugins=None):
+        for p, result in self.get_info_iter(arg, options, plugins):
             print '*** %s (%s) ***' % (p.title, p.description)
             print p.render_template('text',arg, result)
 
@@ -288,7 +297,16 @@ def main():
     parser = OptionParser(usage = "usage: %prog [options] [addresses]")
     parser.add_option("-p", "--plugin", dest="plugins", action="append", default=None)
     parser.add_option("-l", "--list", dest="list", action="store_true", default=False)
-    (options, args) = parser.parse_args()
+    (options, complete_args) = parser.parse_args()
+    context_options = {}
+    args = []
+    for arg in complete_args:
+        if ":" in arg:
+            (ctxt_name, ctxt_value) = arg.split(":", 1)
+            context_options[ctxt_name] = ctxt_value
+        else:
+            args.append(arg)
+    
     p=Ninfo()
     if options.list:
         print "%-20s %-20s %s" %("Name", "Title", "Description")
@@ -300,7 +318,7 @@ def main():
         for arg in args:
             if len(args) != 1:
                 print "=== %s === " % (arg)
-            p.show_info(arg, plugins=plugins)
+            p.show_info(arg, context_options, plugins=plugins)
 
 if __name__ == "__main__":
     main()
