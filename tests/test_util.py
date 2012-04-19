@@ -57,10 +57,12 @@ def test_query_parsing():
         ('one two key:value b:c', (['one','two'], {'key': 'value', 'b': 'c'})),
         ('arg key:"spaced value"', (['arg'], {'key': 'spaced value'})),
         ('arg two key:"spaced value" b:"c d"', (['arg','two'], {'key': 'spaced value', 'b': "c d"})),
+        ('1.2.3.4', (['1.2.3.4'], {})),
+        ('1.2.3.4 time:"2012-04-19 11:50', (['1.2.3.4'], {'time':'2012-04-19 11:50'})),
     )
 
     for input, output in cases:
         yield query_parse_case, input, output
 
 def query_parse_case(input, output):
-    assert util.parse_query(input) == output
+    assert util.parse_query(input) == output, "%r != %r" % (util.parse_query(input), output)

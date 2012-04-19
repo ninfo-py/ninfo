@@ -33,9 +33,26 @@ def parse_query(s):
 
     args = []
     options = {}
-    #split into words OR key:value OR key:"value value"
-    #re matches (words|key:value|key:"value value")
-    parts = [x[1] or x[0] for x in re.findall('((\w+)(?: |$)|\w+:\w+|\w+:"[^"]+")', s)]
+
+    #regex too complicated, state machine easy
+    #first split the string into components, respecting quotes
+    parts = []
+    in_quote = False
+    p = ""
+    for l in s:
+        if l.isspace() and not in_quote:
+            parts.append(p)
+            p=""
+        elif l in '"\'' and not in_quote:
+            in_quote = l
+        elif l == in_quote:
+            in_quote = False
+        else:
+            p+=l
+    if p:
+        parts.append(p)
+
+    #now separate each argument or option
     for arg in parts:
         if ":" not in arg:
             args.append(arg)
