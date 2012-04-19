@@ -318,7 +318,7 @@ def main():
         for arg in args:
             if len(args) != 1:
                 print "=== %s === " % (arg)
-            p.show_info(arg, plugins=plugins, context_options)
+            p.show_info(arg, plugins=plugins, options=context_options)
 
 if __name__ == "__main__":
     main()
