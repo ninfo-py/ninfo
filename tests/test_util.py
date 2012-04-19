@@ -47,3 +47,20 @@ def test_is_local():
 
 def is_local_case(networks, ip, result):
     assert util.is_local(networks, ip) == result
+
+
+def test_query_parsing():
+    cases = (
+        ('one two', (['one', 'two'], {})),
+        ('arg key:value', (['arg'], {'key': 'value'})),
+        ('one two key:value', (['one','two'], {'key': 'value'})),
+        ('one two key:value b:c', (['one','two'], {'key': 'value', 'b': 'c'})),
+        ('arg key:"spaced value"', (['arg'], {'key': 'spaced value'})),
+        ('arg two key:"spaced value" b:"c d"', (['arg','two'], {'key': 'spaced value', 'b': "c d"})),
+    )
+
+    for input, output in cases:
+        yield query_parse_case, input, output
+
+def query_parse_case(input, output):
+    assert util.parse_query(input) == output
