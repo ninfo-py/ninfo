@@ -299,6 +299,14 @@ def main():
     parser.add_option("-p", "--plugin", dest="plugins", action="append", default=None)
     parser.add_option("-l", "--list", dest="list", action="store_true", default=False)
     (options, complete_args) = parser.parse_args()
+    
+    p=Ninfo()
+    if options.list:
+        print "%-20s %-20s %s" %("Name", "Title", "Description")
+        for pl in p.plugin_classes:
+            print "%-20s %-20s %s" %(pl.name, pl.title, pl.description)
+        return
+
     context_options = {}
     args = []
     for arg in complete_args:
@@ -307,19 +315,12 @@ def main():
             context_options[ctxt_name] = ctxt_value
         else:
             args.append(arg)
-    
-    p=Ninfo()
-    if options.list:
-        print "%-20s %-20s %s" %("Name", "Title", "Description")
-        for pl in p.plugin_classes:
-            print "%-20s %-20s %s" %(pl.name, pl.title, pl.description)
-        return
-    else :
-        plugins = options.plugins or None
-        for arg in args:
-            if len(args) != 1:
-                print "=== %s === " % (arg)
-            p.show_info(arg, plugins=plugins, options=context_options)
+
+    plugins = options.plugins or None
+    for arg in args:
+        if len(args) != 1:
+            print "=== %s === " % (arg)
+        p.show_info(arg, plugins=plugins, options=context_options)
 
 if __name__ == "__main__":
     main()
