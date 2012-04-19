@@ -216,7 +216,8 @@ class Ninfo:
         """Call `plugin` with `arg` and cache and return the result"""
         if not self.compatible_argument(plugin, arg):
             return None
-        if self.cache:
+        timeout = self.get_plugin(plugin).cache_timeout
+        if self.cache and timeout:
             KEY = 'ninfo:%s:%s' % (plugin, arg)
             ret = self.cache.get(KEY)
             if ret:
@@ -225,8 +226,7 @@ class Ninfo:
         try:
             instance = self.get_inst(plugin)
             ret = instance.get_info(arg)
-            if self.cache:
-                timeout = self.get_plugin(plugin).cache_timeout
+            if self.cache and timeout:
                 self.cache.set(KEY, (True, ret), timeout)
             return ret
         except Exception, e:
