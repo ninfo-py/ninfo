@@ -16,6 +16,9 @@ import inspect
 from ninfo import util
 import IPy
 
+def clean_cache_key(s):
+    return ''.join(c for c in s if 32 < ord(c) < 127)
+
 class PluginBase(object):
 
     cache_timeout = 60*60
@@ -217,12 +220,13 @@ class Ninfo:
         """Call `plugin` with `arg`, `options` and cache and return the result"""
         if not self.compatible_argument(plugin, arg):
             return None
-        timeout = self.get_plugin(plugin).cache_timeout
+        plugin_obj = self.get_plugin(plugin)
+        timeout = plugin_obj.cache_timeout
         if self.cache and timeout:
             KEY = 'ninfo:%s:%s' % (plugin, arg)
-            KEY += ":".join(['%s=%s' % (key, value) for (key, value) in options.items()])
+            KEY += ":" + ":".join(['%s=%s' % (key, value) for (key, value) in options.items() if key in plugin_obj.options])
             # Remove non-alphanumerics from key, to be safe
-            KEY = "".join([c for c in KEY if c.isalnum()])
+            KEY = clean_cache_key(KEY)
             ret = self.cache.get(KEY)
             if ret:
                 return ret[1]
