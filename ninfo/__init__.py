@@ -228,7 +228,7 @@ class Ninfo:
             
         try:
             instance = self.get_inst(plugin)
-            get_info_args = len(inspect.getargspec(instance.get_info).args)
+            get_info_args = len(inspect.getargspec(instance.get_info)[0])
             if get_info_args == 3:
                 # This plugin supports context.
                 ret = instance.get_info(arg, options)
