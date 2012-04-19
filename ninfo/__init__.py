@@ -77,7 +77,8 @@ class PluginBase(object):
 
     def _do_render(self, filename, arg, result):
         t = Template(filename=filename, default_filters=['h'])
-        return t.render(arg=arg, plugin=self, config=self.config, plugin_config=self.plugin_config, **result)
+        out = t.render(arg=arg, plugin=self, config=self.config, plugin_config=self.plugin_config, **result)
+        return out.lstrip()
 
     def render_template(self, output_type, arg, result):
         if not result:
