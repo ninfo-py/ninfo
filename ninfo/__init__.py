@@ -154,6 +154,9 @@ class Ninfo:
 
     def compatible_argument(self, plugin, arg):
         plug = self.get_plugin(plugin)
+        if not plug:
+            logger.debug("Skipping plugin %s because plugin does not exist" % plugin)
+            return False
         arg_type = util.get_type(arg)
         if arg_type not in plug.types:
             logger.debug("Skipping plugin %s because arg is the wrong type" % plugin)
