@@ -22,6 +22,7 @@ class PluginBase(object):
     local = True
     remote = True
     template = True
+    options = {}
 
     def __init__(self, config=None, plugin_config=None):
         if config is None:
