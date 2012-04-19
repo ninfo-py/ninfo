@@ -212,7 +212,7 @@ class Ninfo:
         plugins = [self.get_plugin(p) for p in sorted(self.plugins.keys())]
         return [p for p in plugins if p]
 
-    def get_info(self, plugin, arg, options, retries=1):
+    def get_info(self, plugin, arg, options={}, retries=1):
         """Call `plugin` with `arg`, `options` and cache and return the result"""
         if not self.compatible_argument(plugin, arg):
             return None
@@ -246,25 +246,25 @@ class Ninfo:
                 return self.get_info(plugin, arg, options, retries-1)
             raise
 
-    def get_info_json(self, plugin, arg):
-        result = self.get_info(plugin, arg)
+    def get_info_json(self, plugin, arg, options={}):
+        result = self.get_info(plugin, arg, options)
 
         p = self.get_inst(plugin)
         return p.to_json(result)
 
-    def get_info_text(self, plugin, arg):
-        result = self.get_info(plugin, arg)
+    def get_info_text(self, plugin, arg, options={}):
+        result = self.get_info(plugin, arg, options)
 
         p = self.get_inst(plugin)
         return p.render_template('text', arg, result)
 
-    def get_info_html(self, plugin, arg):
-        result = self.get_info(plugin, arg)
+    def get_info_html(self, plugin, arg, options={}):
+        result = self.get_info(plugin, arg, options)
 
         p = self.get_inst(plugin)
         return p.render_template('html', arg, result)
 
-    def get_info_iter(self, arg, options, plugins=None):
+    def get_info_iter(self, arg, plugins=None, options={}):
         for p in sorted(self.plugins.keys()):
             if plugins and p not in plugins:
                 continue
@@ -285,8 +285,8 @@ class Ninfo:
             res[p.name] = result
         return res
 
-    def show_info(self, arg, options, plugins=None):
-        for p, result in self.get_info_iter(arg, options, plugins):
+    def show_info(self, arg, plugins=None, options={}):
+        for p, result in self.get_info_iter(arg, plugins, options):
             print '*** %s (%s) ***' % (p.title, p.description)
             print p.render_template('text',arg, result)
 
@@ -318,7 +318,7 @@ def main():
         for arg in args:
             if len(args) != 1:
                 print "=== %s === " % (arg)
-            p.show_info(arg, context_options, plugins=plugins)
+            p.show_info(arg, plugins=plugins, context_options)
 
 if __name__ == "__main__":
     main()
