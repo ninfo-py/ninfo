@@ -59,6 +59,8 @@ def test_query_parsing():
         ('arg two key:"spaced value" b:"c d"', (['arg','two'], {'key': 'spaced value', 'b': "c d"})),
         ('1.2.3.4', (['1.2.3.4'], {})),
         ('1.2.3.4 time:"2012-04-19 11:50', (['1.2.3.4'], {'time':'2012-04-19 11:50'})),
+        ('00:11:22:33:44:55', (['00:11:22:33:44:55'], {})),
+        ('http://example.com', (['http://example.com'], {})),
     )
 
     for input, output in cases:

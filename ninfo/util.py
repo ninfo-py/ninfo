@@ -54,10 +54,10 @@ def parse_query(s):
 
     #now separate each argument or option
     for arg in parts:
-        if ":" not in arg:
-            args.append(arg)
-        else:
+        if 1 <= arg.count(":") <= 2 and "//" not in arg:
             k, v = arg.split(":", 1)
             v = v.strip('"') # remove the quotes
             options[k] = v
+        else:
+            args.append(arg)
     return args, options
