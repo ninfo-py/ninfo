@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from glob import glob
 
 setup(name='ninfo',
-    version='0.1.6',
+    version='0.1.7',
     zip_safe=False,
     packages = find_packages(exclude=["tests"]),
     include_package_data=True,

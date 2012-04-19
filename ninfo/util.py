@@ -54,7 +54,7 @@ def parse_query(s):
 
     #now separate each argument or option
     for arg in parts:
-        if 1 <= arg.count(":") <= 2 and "//" not in arg:
+        if 1 <= arg.count(":") < 5 and "//" not in arg: #has a : but doesn't look like a mac or url
             k, v = arg.split(":", 1)
             v = v.strip('"') # remove the quotes
             options[k] = v
