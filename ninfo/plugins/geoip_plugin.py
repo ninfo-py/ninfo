@@ -9,7 +9,7 @@ class geoip(PluginBase):
     name = "geoip"
     title = "GeoIP"
     description = "GeoIP"
-    cache_timeout = 60*60
+    cache_timeout = None
     types = ['ip']
     local = False
 
