@@ -12,7 +12,7 @@ class geoip(PluginBase):
     local = False
 
     def setup(self):
-        self.g=GeoIP.new(GeoIP.GEOIP_STANDARD)
+        self.g = GeoIP.new(GeoIP.GEOIP_STANDARD)
 
     def get_info(self, ip):
         code = self.g.country_code_by_addr(ip)

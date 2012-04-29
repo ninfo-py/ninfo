@@ -292,7 +292,7 @@ class Ninfo:
     def show_info(self, arg, plugins=None, options={}):
         for p, result in self.get_info_iter(arg, plugins, options):
             print '*** %s (%s) ***' % (p.title, p.description)
-            print p.render_template('text',arg, result)
+            print p.render_template('text', arg, result)
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
@@ -303,11 +303,11 @@ def main():
     parser.add_option("-l", "--list", dest="list", action="store_true", default=False)
     (options, complete_args) = parser.parse_args()
     
-    p=Ninfo()
+    p = Ninfo()
     if options.list:
         print "%-20s %-20s %s" %("Name", "Title", "Description")
         for pl in p.plugin_classes:
-            print "%-20s %-20s %s" %(pl.name, pl.title, pl.description)
+            print "%-20s %-20s %s" % (pl.name, pl.title, pl.description)
         return
 
     context_options = {}

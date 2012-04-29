@@ -10,6 +10,8 @@ def isip(arg):
         return False
 
 def get_type(arg):
+    """Return the type of the argument (mac, ip, hostname, or username)"""
+
     if ieeemac.ismac(arg):
         return 'mac'
     if isip(arg):
@@ -20,6 +22,7 @@ def get_type(arg):
     return 'username'
 
 def is_local(networks, ip):
+    """Return True if `ip` is in `networks`"""
     for n in networks:
         if ip in n:
             return True
@@ -41,13 +44,13 @@ def parse_query(s):
     for l in s:
         if l.isspace() and not in_quote:
             parts.append(p)
-            p=""
+            p = ""
         elif l in '"\'' and not in_quote:
             in_quote = l
         elif l == in_quote:
             in_quote = False
         else:
-            p+=l
+            p += l
     if p:
         parts.append(p)
 
