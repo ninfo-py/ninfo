@@ -1,6 +1,5 @@
 import ieeemac
 import IPy
-import re
 
 def isip(arg):
     """is arg an ip address?"""

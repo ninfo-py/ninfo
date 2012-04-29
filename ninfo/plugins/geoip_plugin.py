@@ -1,7 +1,5 @@
 import GeoIP
-from ninfo import util
 from ninfo import PluginBase
-import os
 
 class geoip(PluginBase):
     """This plugin returns the location of this ip"""

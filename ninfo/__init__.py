@@ -1,4 +1,3 @@
-import sys
 from pkg_resources import iter_entry_points
 
 import memcache
@@ -184,7 +183,7 @@ class Ninfo:
         try :
             p = self.plugins[plugin].load().plugin_class
             p.long_description = p.__doc__
-        except Exception, e:
+        except:
             logger.exception("Error loading plugin %s" % plugin)
             if plugin in self.plugins:
                 del self.plugins[plugin]
@@ -243,7 +242,7 @@ class Ninfo:
             if self.cache and timeout:
                 self.cache.set(KEY, (True, ret), timeout)
             return ret
-        except Exception, e:
+        except:
             logger.exception("Error running plugin %s" % plugin)
             if retries:
                 if plugin in self.plugin_instances:
