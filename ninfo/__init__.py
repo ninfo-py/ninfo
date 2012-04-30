@@ -205,7 +205,7 @@ class Ninfo:
             return
         instance = klass(config=self.config, plugin_config=plugin_config)
         if not instance.initialized:
-            logger.debug("removing plugin %s because initialization failed" % plugin)
+            logger.info("removing plugin %s because initialization failed" % plugin)
             del self.plugins[plugin]
             del self.plugin_modules[plugin]
             return None
@@ -297,7 +297,7 @@ class Ninfo:
             print p.render_template('text',arg, result)
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     from optparse import OptionParser
     parser = OptionParser(usage = "usage: %prog [options] [addresses]")
