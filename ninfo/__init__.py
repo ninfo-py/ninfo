@@ -1,4 +1,3 @@
-import sys
 from pkg_resources import iter_entry_points
 
 import memcache
@@ -185,7 +184,7 @@ class Ninfo:
         try :
             p = self.plugins[plugin].load().plugin_class
             p.long_description = p.__doc__
-        except Exception, e:
+        except:
             logger.exception("Error loading plugin %s" % plugin)
             if plugin in self.plugins:
                 del self.plugins[plugin]
@@ -244,7 +243,7 @@ class Ninfo:
             if self.cache and timeout:
                 self.cache.set(KEY, (True, ret), timeout)
             return ret
-        except Exception, e:
+        except:
             logger.exception("Error running plugin %s" % plugin)
             if retries:
                 if plugin in self.plugin_instances:
@@ -294,7 +293,7 @@ class Ninfo:
     def show_info(self, arg, plugins=None, options={}):
         for p, result in self.get_info_iter(arg, plugins, options):
             print '*** %s (%s) ***' % (p.title, p.description)
-            print p.render_template('text',arg, result)
+            print p.render_template('text', arg, result)
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -305,11 +304,11 @@ def main():
     parser.add_option("-l", "--list", dest="list", action="store_true", default=False)
     (options, complete_args) = parser.parse_args()
     
-    p=Ninfo()
+    p = Ninfo()
     if options.list:
         print "%-20s %-20s %s" %("Name", "Title", "Description")
         for pl in p.plugin_classes:
-            print "%-20s %-20s %s" %(pl.name, pl.title, pl.description)
+            print "%-20s %-20s %s" % (pl.name, pl.title, pl.description)
         return
 
     context_options = {}

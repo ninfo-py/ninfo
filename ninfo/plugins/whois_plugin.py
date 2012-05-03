@@ -17,7 +17,7 @@ class whois(PluginBase):
         status = pipe.returncode
 
         output = output.decode('ascii','ignore')
-        return dict(status=status,output=output)
+        return dict(status=status, output=output)
 
     def render_template(self, output_type, arg, result):
         if not result:

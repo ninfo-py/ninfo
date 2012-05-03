@@ -1,6 +1,6 @@
 import GeoIP
-from ninfo import util
 from ninfo import PluginBase
+
 import os
 
 CITY_DB = "/usr/share/GeoIP/GeoLiteCity.dat"
@@ -20,11 +20,10 @@ class geoip(PluginBase):
     def setup(self):
         if os.path.exists(CITY_DB):
             self.city = True
-            self.g=GeoIP.open(CITY_DB, 0)
+            self.g = GeoIP.open(CITY_DB, 0)
         else:
             self.city = False
-            self.g=GeoIP.new(GeoIP.GEOIP_STANDARD)
-
+            self.g = GeoIP.new(GeoIP.GEOIP_STANDARD)
 
     def get_info(self, ip):
         if self.city:

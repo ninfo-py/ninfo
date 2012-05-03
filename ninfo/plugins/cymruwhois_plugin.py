@@ -11,7 +11,7 @@ class cymru_whois(PluginBase):
     local = False
 
     def setup(self):
-        self.c=cymruwhois.Client()
+        self.c = cymruwhois.Client()
 
     def get_info(self, ip):
         #Don't bother looking up on-campus hosts
