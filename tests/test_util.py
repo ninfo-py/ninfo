@@ -52,14 +52,14 @@ def is_local_case(networks, ip, result):
 def test_query_parsing():
     cases = (
         ('one two', (['one', 'two'], {})),
-        ('arg key:value', (['arg'], {'key': 'value'})),
-        ('one two key:value', (['one','two'], {'key': 'value'})),
-        ('one two key:value b:c', (['one','two'], {'key': 'value', 'b': 'c'})),
-        ('arg key:"spaced value"', (['arg'], {'key': 'spaced value'})),
-        ('arg two key:"spaced value" b:"c d"', (['arg','two'], {'key': 'spaced value', 'b': "c d"})),
+        ('arg key=value', (['arg'], {'key': 'value'})),
+        ('one two key=value', (['one','two'], {'key': 'value'})),
+        ('one two key=value b=c', (['one','two'], {'key': 'value', 'b': 'c'})),
+        ('arg key="spaced value"', (['arg'], {'key': 'spaced value'})),
+        ('arg two key="spaced value" b="c d"', (['arg','two'], {'key': 'spaced value', 'b': "c d"})),
         ('1.2.3.4', (['1.2.3.4'], {})),
-        ('1.2.3.4 time:"2012-04-19 11:50', (['1.2.3.4'], {'time':'2012-04-19 11:50'})),
-        ('1.2.3.4 time:"2012-04-19 11:50:22', (['1.2.3.4'], {'time':'2012-04-19 11:50:22'})),
+        ('1.2.3.4 time="2012-04-19 11:50', (['1.2.3.4'], {'time':'2012-04-19 11:50'})),
+        ('1.2.3.4 time="2012-04-19 11:50:22', (['1.2.3.4'], {'time':'2012-04-19 11:50:22'})),
         ('00:11:22:33:44:55', (['00:11:22:33:44:55'], {})),
         ('http://example.com', (['http://example.com'], {})),
     )

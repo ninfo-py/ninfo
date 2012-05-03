@@ -315,8 +315,8 @@ def main():
     context_options = {}
     args = []
     for arg in complete_args:
-        if ":" in arg:
-            (ctxt_name, ctxt_value) = arg.split(":", 1)
+        if "=" in arg:
+            (ctxt_name, ctxt_value) = arg.split("=", 1)
             context_options[ctxt_name] = ctxt_value
         else:
             args.append(arg)
