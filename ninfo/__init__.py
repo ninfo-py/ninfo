@@ -297,6 +297,9 @@ class Ninfo:
 
 def main():
     logging.basicConfig(level=logging.INFO)
+    #requests logs stuff at level INFO
+    logging.getLogger("requests.packages.urllib3").setLevel(logging.ERROR)
+
 
     from optparse import OptionParser
     parser = OptionParser(usage = "usage: %prog [options] [addresses]")
