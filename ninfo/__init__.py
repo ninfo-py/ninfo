@@ -25,6 +25,7 @@ class PluginBase(object):
     remote = True
     template = True
     options = {}
+    converters = {}
 
     def __init__(self, config=None, plugin_config=None):
         if config is None:
@@ -103,6 +104,11 @@ class PluginBase(object):
         template = os.path.join(path, filename)
         if os.path.exists(template):
             return template
+
+    def get_converter(self, a, b):
+        func = self.converters.get((a,b))
+        if func:
+            return getattr(self, func)
 
 class Ninfo:
     def __init__(self, config_file=None):
@@ -294,6 +300,13 @@ class Ninfo:
         for p, result in self.get_info_iter(arg, plugins, options):
             print '*** %s (%s) ***' % (p.title, p.description)
             print p.render_template('text', arg, result)
+
+    def convert(self, arg, to_type):
+        arg_type = util.get_type(arg)
+        for p in self.plugin_classes:
+            if (arg_type, to_type) in p.converters:
+                inst = self.get_inst(p.name)
+                yield p.name, inst.get_converter(arg_type, to_type)(arg)
 
 def main():
     logging.basicConfig(level=logging.INFO)
