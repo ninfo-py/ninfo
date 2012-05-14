@@ -4,8 +4,8 @@ import IPy
 def isip(arg):
     """is arg an ip address?"""
     try:
-        IPy.IP(arg)
-        return True
+        x = IPy.IP(arg)
+        return x.version()
     except ValueError:
         return False
 
@@ -14,8 +14,11 @@ def get_type(arg):
 
     if ieeemac.ismac(arg):
         return 'mac'
-    if isip(arg):
-        return 'ip'
+    ipver = isip(arg)
+    if ipver == 6:
+        return "ip6"
+    elif ipver == 4:
+        return "ip"
     if '.' in arg:
         return 'hostname'
     

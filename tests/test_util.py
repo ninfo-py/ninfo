@@ -1,8 +1,8 @@
 from ninfo import util
 def test_is_ip():
     cases = (
-        ("1.2.3.4", True),
-        ("123.123.123.123", True),
+        ("1.2.3.4", 4),
+        ("123.123.123.123", 4),
         ("123.123.123.321", False),
         ("1.2.3.4a", False),
         ("a1.2.3.4", False),
@@ -18,7 +18,7 @@ def ip_case(ip, valid):
 def test_get_type():
     cases = (
         ("1.2.3.4", "ip"),
-        ("2001:4860:800e::69", "ip"),
+        ("2001:4860:800e::69", "ip6"),
         ("001122334455", "mac"),
         ("blah.com", "hostname"),
         ("blah", "username"),

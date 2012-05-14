@@ -7,7 +7,7 @@ class cymru_whois(PluginBase):
     name = 'cymruwhois'
     title = 'Cymru Whois'
     description = 'Cymru Whois lookup'
-    types = ['ip']
+    types = ['ip', 'ip6']
     local = False
 
     def setup(self):

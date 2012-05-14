@@ -8,7 +8,7 @@ class whois(PluginBase):
     title =        'whois'
     description =  'whois'
     cache_timeout =   60*60
-    types =     ['ip','hostname']
+    types =     ['ip','ip6','hostname']
     local =     False
 
     def get_info(self, arg):
