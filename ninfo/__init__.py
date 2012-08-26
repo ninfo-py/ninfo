@@ -76,7 +76,10 @@ class PluginBase(object):
         return self.render_template('html', arg, result)
 
     def _do_render(self, filename, arg, result):
-        t = Template(filename=filename, default_filters=['h'])
+        kw = {}
+        if 'html' in filename:
+            kw['default_filters'] = ['h']
+        t = Template(filename=filename, **kw)
         out = t.render(arg=arg, plugin=self, config=self.config, plugin_config=self.plugin_config, **result)
         return out.lstrip()
 
