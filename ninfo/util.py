@@ -106,3 +106,12 @@ def fmt_dict_array(ar, order=None, header=True):
         table.append(line)
 
     return "\n".join(table)
+
+def unique(lst):
+    out = []
+    seen = set()
+    for x in lst:
+        if x not in seen:
+            out.append(x)
+            seen.add(x)
+    return out

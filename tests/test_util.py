@@ -69,3 +69,14 @@ def test_query_parsing():
 
 def query_parse_case(input, output):
     assert util.parse_query(input) == output, "%r != %r" % (util.parse_query(input), output)
+
+def test_unique():
+    cases = (
+        (['a','a'], ['a']),
+        (['a','b','a'], ['a','b']),
+    )
+    for input, output in cases:
+        yield unique_case, input, output
+
+def unique_case(input, output):
+    assert util.unique(input) == output
