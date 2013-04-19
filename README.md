@@ -1,3 +1,5 @@
+<p align="center"><img src="meme.jpeg"/></p>
+
 nInfo
 =====
 
