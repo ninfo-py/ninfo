@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from glob import glob
 
 setup(name='ninfo',
     version='0.1.14',
