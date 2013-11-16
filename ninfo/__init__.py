@@ -145,6 +145,13 @@ class Ninfo:
                 else:
                     logger.info("Plugin %s disabled via .ini file." % plugin_name)
 
+        # Add entries for a cloned plugin configuration
+        for section in self.config:
+            clone = self.config[section].get("clone")
+            if clone:
+                plugin_name = section.split(":")[1]
+                self.plugins[plugin_name] = self.plugins[clone]
+
         if 'general' not in self.config:
             self.cache = None
             self.local_networks = []
