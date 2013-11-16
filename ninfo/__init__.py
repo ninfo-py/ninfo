@@ -160,7 +160,7 @@ class Ninfo:
         self.local_networks = [IPy.IP(n) for n in networks_str.split(",")]
 
     def is_local(self, arg):
-        if util.get_type(arg) != "ip":
+        if util.get_type(arg) not in ["ip", "ip6"]:
             return False
 
         return util.is_local(self.local_networks, arg)
@@ -175,7 +175,7 @@ class Ninfo:
             logger.debug("Skipping plugin %s because arg is the wrong type" % plugin)
             return False
 
-        if arg_type == 'ip':
+        if arg_type in ['ip', 'ip6']:
             if plug.local == False and self.is_local(arg):
                 logger.debug("Skipping plugin %s because arg is local" % plugin)
                 return False
