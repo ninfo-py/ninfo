@@ -148,7 +148,8 @@ class Ninfo:
         # Add entries for a cloned plugin configuration
         for section in self.config:
             clone = self.config[section].get("clone")
-            if clone:
+            disabled = self.config[section].get("disabled")
+            if clone and not disabled:
                 plugin_name = section.split(":")[1]
                 self.plugins[plugin_name] = self.plugins[clone]
 
