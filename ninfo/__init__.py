@@ -217,8 +217,11 @@ class Ninfo:
             return
 
         instance = cls(config=self.config, plugin_config=plugin_config)
-        #override plugin name for the case of cloned plugins
+        #override any plugin metadata for the case of cloned plugins(or otherwise)
         instance.name = plugin
+        for field in 'name', 'title', 'description':
+            if field in plugin_config:
+                setattr(instance, field, plugin_config[field])
         self.plugin_instances[plugin] = instance
         return instance
 
