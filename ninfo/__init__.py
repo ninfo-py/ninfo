@@ -18,6 +18,9 @@ import IPy
 def clean_cache_key(s):
     return ''.join(c for c in s if 32 < ord(c) < 127)
 
+class PluginInitError(Exception):
+    pass
+
 class PluginBase(object):
 
     cache_timeout = 60*60
@@ -28,6 +31,7 @@ class PluginBase(object):
     converters = {}
 
     def __init__(self, config=None, plugin_config=None):
+        self.long_desription = self.__doc__
         if config is None:
             config = {}
         if plugin_config is None:
@@ -37,15 +41,16 @@ class PluginBase(object):
         self.initialized = False
         if 'disabled' in plugin_config:
             return
-
+    
+    def init(self):
+        if self.initialized:
+            return
         try :
             self.initialized = (self.setup() != False)
         except:
-            logger.exception("Error loading plugin %s" % self.name)
+            logger.exception("Error initializing plugin %s" % self.name)
+            raise PluginInitError("Error initializing plugin %s" % self.name)
 
-        self.long_desription = self.__doc__
-
-    @classmethod
     def as_json(self):
         return {
             'name': self.name,
@@ -115,11 +120,10 @@ class PluginBase(object):
 
 class Ninfo:
     def __init__(self, config_file=None):
-        self.plugins = {}
-        for ep in iter_entry_points(group='ninfo.plugin'):
-            self.plugins[ep.name] = ep
-        self.plugin_modules = {}
         self.plugin_instances = {}
+        self.plugin_modules = {}
+        for ep in iter_entry_points(group='ninfo.plugin'):
+            self.plugin_modules[ep.name] = ep
 
         self.read_config(config_file)
 
@@ -139,7 +143,7 @@ class Ninfo:
             if "disabled" in self.config[section]:
                 plugin_name = section.split(":")[1]
                 try:
-                    del self.plugins[plugin_name]
+                    del self.plugin_modules[plugin_name]
                 except KeyError:
                     logger.debug("Plugin %s is disabled in .ini file, but was not found." % plugin_name)
                 else:
@@ -151,7 +155,7 @@ class Ninfo:
             disabled = self.config[section].get("disabled")
             if clone and not disabled:
                 plugin_name = section.split(":")[1]
-                self.plugins[plugin_name] = self.plugins[clone]
+                self.plugin_modules[plugin_name] = self.plugin_modules[clone]
 
         if 'general' not in self.config:
             self.cache = None
@@ -193,44 +197,34 @@ class Ninfo:
         return True
 
     def get_plugin(self, plugin):
-        if plugin not in self.plugins:
+        if plugin not in self.plugin_modules:
             return None
-        if plugin in self.plugin_modules:
-            return self.plugin_modules[plugin]
-
-        try :
-            p = self.plugins[plugin].load().plugin_class
-            p.long_description = p.__doc__
-        except:
-            logger.exception("Error loading plugin %s" % plugin)
-            if plugin in self.plugins:
-                del self.plugins[plugin]
-            return
-        self.plugin_modules[plugin] = p
-        return p
-    
-    def get_inst(self, plugin):
         if plugin in self.plugin_instances:
             return self.plugin_instances[plugin]
 
         plugin_config_key = 'plugin:' + plugin
         plugin_config = self.config.get(plugin_config_key, {})
-
-        klass = self.get_plugin(plugin)
-        if not klass:
-            return
-        instance = klass(config=self.config, plugin_config=plugin_config)
-        if not instance.initialized:
-            logger.info("removing plugin %s because initialization failed" % plugin)
-            del self.plugins[plugin]
-            del self.plugin_modules[plugin]
+        if 'disabled' in plugin_config:
             return None
+
+        try :
+            cls = self.plugin_modules[plugin].load().plugin_class
+            cls.long_description = cls.__doc__
+        except:
+            logger.exception("Error loading plugin %s" % plugin)
+            if plugin in self.plugin_modules:
+                del self.plugin_modules[plugin]
+            return
+
+        instance = cls(config=self.config, plugin_config=plugin_config)
+        #override plugin name for the case of cloned plugins
+        instance.name = plugin
         self.plugin_instances[plugin] = instance
         return instance
 
     @property
-    def plugin_classes(self):
-        plugins = [self.get_plugin(p) for p in sorted(self.plugins.keys())]
+    def plugins(self):
+        plugins = [self.get_plugin(p) for p in sorted(self.plugin_modules.keys())]
         return [p for p in plugins if p]
 
     def get_info(self, plugin, arg, options={}, retries=1):
@@ -249,57 +243,54 @@ class Ninfo:
                 return ret[1]
             
         try:
-            instance = self.get_inst(plugin)
-            get_info_args = len(inspect.getargspec(instance.get_info)[0])
+            plugin_obj.init()
+            get_info_args = len(inspect.getargspec(plugin_obj.get_info)[0])
             if get_info_args == 3:
                 # This plugin supports context.
-                ret = instance.get_info(arg, options)
+                ret = plugin_obj.get_info(arg, options)
             else:
                 # This plugin doesn't.
-                ret = instance.get_info(arg)
+                ret = plugin_obj.get_info(arg)
             if self.cache and timeout:
                 self.cache.set(KEY, (True, ret), timeout)
             return ret
+        except PluginInitError:
+            raise
         except:
             logger.exception("Error running plugin %s" % plugin)
             if retries:
-                if plugin in self.plugin_instances:
-                    del self.plugin_instances[plugin]
                 return self.get_info(plugin, arg, options, retries-1)
             raise
 
     def get_info_json(self, plugin, arg, options={}):
         result = self.get_info(plugin, arg, options)
 
-        p = self.get_inst(plugin)
+        p = self.get_plugin(plugin)
         return p.to_json(result)
 
     def get_info_text(self, plugin, arg, options={}):
         result = self.get_info(plugin, arg, options)
 
-        p = self.get_inst(plugin)
+        p = self.get_plugin(plugin)
         return p.render_template('text', arg, result)
 
     def get_info_html(self, plugin, arg, options={}):
         result = self.get_info(plugin, arg, options)
 
-        p = self.get_inst(plugin)
+        p = self.get_plugin(plugin)
         return p.render_template('html', arg, result)
 
     def get_info_iter(self, arg, plugins=None, options={}):
-        for p in sorted(self.plugins.keys()):
-            if plugins and p not in plugins:
+        for p in sorted(self.plugins):
+            if plugins and p.name not in plugins:
                 continue
-            if not self.compatible_argument(p, arg):
-                continue
-            inst = self.get_inst(p)
-            if not inst:
+            if not self.compatible_argument(p.name, arg):
                 continue
             try :
-                result = self.get_info(p, arg, options)
-                yield inst, result
+                result = self.get_info(p.name, arg, options)
+                yield p, result
             except:
-                pass
+                logger.exception("Error running plugin %s", p.name)
 
     def get_info_dict(self, arg):
         res = {}
@@ -314,10 +305,9 @@ class Ninfo:
 
     def convert(self, arg, to_type):
         arg_type = util.get_type(arg)
-        for p in self.plugin_classes:
+        for p in self.plugins:
             if (arg_type, to_type) in p.converters:
-                inst = self.get_inst(p.name)
-                yield p.name, inst.get_converter(arg_type, to_type)(arg)
+                yield p.name, p.get_converter(arg_type, to_type)(arg)
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -334,7 +324,7 @@ def main():
     p = Ninfo()
     if options.list:
         print "%-20s %-20s %s" %("Name", "Title", "Description")
-        for pl in p.plugin_classes:
+        for pl in p.plugins:
             print "%-20s %-20s %s" % (pl.name, pl.title, pl.description)
         return
 
