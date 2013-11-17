@@ -118,6 +118,21 @@ Plugin Metadata
 * local - if False, this plugin will not be ran against local hosts.
 * remote - if False, this plugin will not be ran against remote hosts.
 
+Cloned Plugins
+--------------
+
+Multiple instances of a plugin can be created by adding another section in the
+configuration file and optionally overriding the plugin metadata:
+
+    [plugin:geoip]
+    path = GeoIP.dat
+
+    [plugin:geoipcity]
+    clone = geoip
+    path = GeoIPCity.dat
+    title = City GeoIP
+    description = City Level GeoIP
+
 See Also
 --------
 
