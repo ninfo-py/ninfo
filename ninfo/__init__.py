@@ -18,7 +18,13 @@ import IPy
 def clean_cache_key(s):
     return ''.join(c for c in s if 32 < ord(c) < 127)
 
-class PluginInitError(Exception):
+
+class PluginError(Exception):
+    def __init__(self, message, cause):
+        super(PluginError, self).__init__(message + u', caused by ' + repr(cause))
+        self.cause = cause
+
+class PluginInitError(PluginError):
     pass
 
 class PluginBase(object):
@@ -47,9 +53,9 @@ class PluginBase(object):
             return
         try :
             self.initialized = (self.setup() != False)
-        except:
+        except Exception, e:
             logger.exception("Error initializing plugin %s" % self.name)
-            raise PluginInitError("Error initializing plugin %s" % self.name)
+            raise PluginInitError("Error initializing plugin %s" % self.name, cause=e)
 
     def as_json(self):
         return {
@@ -259,11 +265,11 @@ class Ninfo:
             return ret
         except PluginInitError:
             raise
-        except:
+        except Exception, e:
             logger.exception("Error running plugin %s" % plugin)
             if retries:
                 return self.get_info(plugin, arg, options, retries-1)
-            raise
+            raise PluginError("Error running plugin %s"% plugin, cause=e)
 
     def get_info_json(self, plugin, arg, options={}):
         result = self.get_info(plugin, arg, options)
@@ -292,7 +298,7 @@ class Ninfo:
             try :
                 result = self.get_info(p.name, arg, options)
                 yield p, result
-            except:
+            except PluginError:
                 logger.exception("Error running plugin %s", p.name)
 
     def get_info_dict(self, arg):
