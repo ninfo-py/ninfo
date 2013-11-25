@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='ninfo',
-    version='0.2.0',
+    version='0.3.0',
     zip_safe=False,
     packages = find_packages(exclude=["tests"]),
     include_package_data=True,
@@ -12,6 +12,9 @@ setup(name='ninfo',
         "cymruwhois",
         "IPy",
     ],
+    extras_require = {
+        'Splunk' : ['splunk-sdk'],
+    },
     entry_points = {
         'console_scripts': [
             'ninfo = ninfo:main',
@@ -22,4 +25,4 @@ setup(name='ninfo',
             'cymruwhois = ninfo.plugins.cymruwhois_plugin',
         ]
     }
-) 
+)
