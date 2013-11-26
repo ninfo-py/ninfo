@@ -315,8 +315,12 @@ class Ninfo:
     def convert(self, arg, to_type):
         arg_type = util.get_type(arg)
         for p in self.plugins:
-            if (arg_type, to_type) in p.converters:
-                yield p.name, p.get_converter(arg_type, to_type)(arg)
+            try:
+                if (arg_type, to_type) in p.converters:
+                    p.init()
+                    yield p.name, p.get_converter(arg_type, to_type)(arg)
+            except PluginError:
+                logger.exception("Error running plugin %s", p.name)
 
 def main():
     logging.basicConfig(level=logging.INFO)
