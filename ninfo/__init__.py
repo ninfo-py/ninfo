@@ -47,7 +47,7 @@ class PluginBase(object):
         self.initialized = False
         if 'disabled' in plugin_config:
             return
-    
+
     def init(self):
         if self.initialized:
             return
@@ -132,6 +132,9 @@ class Ninfo:
             self.plugin_modules[ep.name] = ep
 
         self.read_config(config_file)
+
+    def __contains__(self, plugin):
+        return plugin in self.plugin_modules
 
     def read_config(self, config_file):
         cp = ConfigParser.ConfigParser()
@@ -250,7 +253,7 @@ class Ninfo:
             ret = self.cache.get(KEY)
             if ret:
                 return ret[1]
-            
+
         try:
             plugin_obj.init()
             get_info_args = len(inspect.getargspec(plugin_obj.get_info)[0])
@@ -333,7 +336,7 @@ def main():
     parser.add_option("-p", "--plugin", dest="plugins", action="append", default=None)
     parser.add_option("-l", "--list", dest="list", action="store_true", default=False)
     (options, complete_args) = parser.parse_args()
-    
+
     p = Ninfo()
     if options.list:
         print "%-20s %-20s %s" %("Name", "Title", "Description")
