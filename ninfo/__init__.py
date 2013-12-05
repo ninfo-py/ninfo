@@ -16,7 +16,7 @@ from ninfo import util
 import IPy
 
 def clean_cache_key(s):
-    return ''.join(c for c in s if 32 < ord(c) < 127)
+    return ''.join(c for c in s if 32 < ord(c) < 127).encode("utf-8")
 
 
 class PluginError(Exception):
