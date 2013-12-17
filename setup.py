@@ -11,6 +11,7 @@ setup(name='ninfo',
         "ieeemac",
         "cymruwhois",
         "IPy",
+        "pygeoip",
     ],
     extras_require = {
         'Splunk' : ['splunk-sdk'],
