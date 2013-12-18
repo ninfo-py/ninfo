@@ -293,7 +293,7 @@ class Ninfo:
         return p.render_template('html', arg, result)
 
     def get_info_iter(self, arg, plugins=None, options={}):
-        for p in sorted(self.plugins):
+        for p in sorted(self.plugins, key=lambda p: p.name):
             if plugins and p.name not in plugins:
                 continue
             if not self.compatible_argument(p.name, arg):
