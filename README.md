@@ -3,15 +3,16 @@
 nInfo
 =====
 
-nInfo is a tool and framework (and lots of plugins) for gathering information on an
+nInfo is a tool and framework (and lots of plugins) for gathering information on any of
+the following:
 
- * IP Address
+ * IP Address (v4 or v6)
  * MAC Address
  * Hostname
  * Username
 
 It consists of multiple plugin classes that implement a `get_info` function.
-The classes contain metadata for the type of arguments they accept, and if
+The classes contain metadata for acceptable arguments, and if
 they are relevant for internal and or external hosts.
 
 The tool
@@ -80,7 +81,7 @@ class fun_plugin(PluginBase):
 plugin_class = fun_plugin
 ```
 
-If installed, this plugin can be ran as follows:
+If installed, this plugin can be run as follows:
 
     >>> from ninfo import Ninfo
     >>> p = Ninfo()
