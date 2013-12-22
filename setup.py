@@ -9,7 +9,6 @@ setup(name='ninfo',
         "Mako",
         "python-memcached",
         "ieeemac",
-        "cymruwhois",
         "IPy",
     ],
     extras_require = {
