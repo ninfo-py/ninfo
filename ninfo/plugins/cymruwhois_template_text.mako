@@ -1,1 +1,0 @@
-${asn} ${cc} ${prefix} ${owner}
