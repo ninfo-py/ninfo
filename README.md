@@ -3,9 +3,9 @@
 nInfo
 =====
 
-nInfo is a tool and framework (and lots of plugins) for gathering information on an
+nInfo is a tool and framework (and lots of plugins) for gathering information on any of the following:
 
- * IP Address
+ * IP Address (v4 or v6)
  * MAC Address
  * Hostname
  * Username
@@ -80,7 +80,7 @@ class fun_plugin(PluginBase):
 plugin_class = fun_plugin
 ```
 
-If installed, this plugin can be ran as follows:
+If installed, this plugin can be run as follows:
 
     >>> from ninfo import Ninfo
     >>> p = Ninfo()
@@ -115,8 +115,8 @@ Plugin Metadata
 * cache_timeout - timeout in seconds that this plugin should be cached in
       memcache, and the max-age parameter sent by the web interface.
 * types - A list of one or more of 'mac', 'ip', 'hostname', 'username'.
-* local - if False, this plugin will not be ran against local hosts.
-* remote - if False, this plugin will not be ran against remote hosts.
+* local - if False, this plugin will not be run against local hosts.
+* remote - if False, this plugin will not be run against remote hosts.
 
 Cloned Plugins
 --------------
