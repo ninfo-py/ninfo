@@ -1,3 +1,4 @@
+from nose.tools import eq_
 from ninfo import util
 def test_is_ip():
     cases = (
@@ -13,7 +14,7 @@ def test_is_ip():
         yield ip_case, ip, valid
 
 def ip_case(ip, valid):
-    assert util.isip(ip) == valid
+    eq_(util.isip(ip), valid)
 
 def test_get_type():
     cases = (
@@ -22,12 +23,14 @@ def test_get_type():
         ("001122334455", "mac"),
         ("blah.com", "hostname"),
         ("blah", "username"),
+        ("1.2.3.0/24", "cidr"),
+        ("2001:4860:800e::0/48", "cidr6"),
     )
     for x, t in cases:
         yield type_case, x, t
 
 def type_case(x, expected_type):
-    assert util.get_type(x) == expected_type
+    eq_(util.get_type(x), expected_type)
 
 
 import IPy
