@@ -3,7 +3,7 @@
 nInfo
 =====
 
-nInfo is a tool and framework (and lots of plugins) for gathering information on any of the following:
+nInfo is a library, CLI tool, and web interface (and lots of plugins) for gathering information on any of the following:
 
  * IP Address (v4 or v6)
  * CIDR Block (v4 or v6)
@@ -15,8 +15,8 @@ It consists of multiple plugin classes that implement a `get_info` function.
 The classes contain metadata for the type of arguments they accept, and if
 they are relevant for internal and or external hosts.
 
-The tool
-========
+The CLI tool
+============
 
 Listing plugins
 ---------------
@@ -49,6 +49,20 @@ Silly example, run two plugins against two addreses:
     *** GeoIP (GeoIP) ***
     US - United States
 
+The Library
+===========
+
+    >>> from ninfo import Ninfo
+    >>> n=Ninfo()
+    >>> n.get_info("cymruwhois", "8.8.8.8")
+    {'cc': 'US', 'ip': '8.8.8.8', 'prefix': '8.8.8.0/24', 'asn': '15169', 'owner': 'GOOGLE - Google Inc.'}
+    >>> print n.get_info_text("geoip", "8.8.8.8")
+    US - United States
+
+The Web Interface
+=================
+
+See https://github.com/justinazoff/ninfo_web or https://github.com/justinazoff/django-ninfo
 
 Writing A plugin
 ----------------
