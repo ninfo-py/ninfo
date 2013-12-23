@@ -12,13 +12,18 @@ def isip(arg):
 def get_type(arg):
     """Return the type of the argument (mac, ip, hostname, or username)"""
 
+    ip_types = {
+        (4, False): "ip",
+        (6, False): "ip6",
+        (4, True): "cidr",
+        (6, True): "cidr6",
+    }
+
     if ieeemac.ismac(arg):
         return 'mac'
     ipver = isip(arg)
-    if ipver == 6:
-        return "ip6"
-    elif ipver == 4:
-        return "ip"
+    if ipver:
+        return ip_types[(ipver, '/' in arg)]
     if '.' in arg:
         return 'hostname'
     
