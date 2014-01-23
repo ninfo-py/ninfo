@@ -25,6 +25,7 @@ class SplunkBase(PluginBase):
 
         self.splunklibresults = results
 
+    def connect(self):
         sc = self.config['splunk']
         host = sc['host']
         port = sc['port']
@@ -33,6 +34,7 @@ class SplunkBase(PluginBase):
         self.s = client.connect(host=host, port=port, username=username, password=password)
 
     def do_search(self, query):
+        self.connect()
         logger.debug("Searching splunk for '%s'" % query)
         q = "search " + query
         rr = self.splunklibresults.ResultsReader(self.s.jobs.export(q))
