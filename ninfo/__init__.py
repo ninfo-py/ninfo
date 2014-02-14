@@ -50,9 +50,10 @@ class PluginBase(object):
 
     def init(self):
         if self.initialized:
-            return
+            return True
         try :
             self.initialized = (self.setup() != False)
+            return self.initialized
         except Exception, e:
             logger.exception("Error initializing plugin %s" % self.name)
             raise PluginInitError("Error initializing plugin %s" % self.name, cause=e)
