@@ -45,6 +45,7 @@ class PluginBase(object):
         self.config = config
         self.plugin_config = plugin_config
         self.initialized = False
+        self._name = self.name
         if 'disabled' in plugin_config:
             return
 
@@ -115,7 +116,7 @@ class PluginBase(object):
     def get_template(self, output_type):
         code = inspect.getsourcefile(self.__class__)
         path = os.path.dirname(code)
-        filename = "%s_template_%s.mako" % (self.name, output_type)
+        filename = "%s_template_%s.mako" % (self._name, output_type)
         template = os.path.join(path, filename)
         if os.path.exists(template):
             return template
