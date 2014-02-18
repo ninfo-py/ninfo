@@ -23,6 +23,7 @@ class SplunkBase(PluginBase):
         import splunklib.client as client
         import splunklib.results as results
 
+        self.client = client
         self.splunklibresults = results
 
     def connect(self):
@@ -31,7 +32,7 @@ class SplunkBase(PluginBase):
         port = sc['port']
         username = sc['username']
         password = sc['password']
-        self.s = client.connect(host=host, port=port, username=username, password=password)
+        self.s = self.client.connect(host=host, port=port, username=username, password=password)
 
     def do_search(self, query):
         self.connect()
