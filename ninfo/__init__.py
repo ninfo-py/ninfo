@@ -164,7 +164,7 @@ class Ninfo:
         for section in self.config:
             clone = self.config[section].get("clone")
             disabled = self.config[section].get("disabled")
-            if clone and not disabled:
+            if clone and not disabled and clone in self.plugin_modules:
                 plugin_name = section.split(":")[1]
                 self.plugin_modules[plugin_name] = self.plugin_modules[clone]
 
