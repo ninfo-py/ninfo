@@ -1,5 +1,6 @@
 import ieeemac
 import IPy
+import re
 
 def isip(arg):
     """is arg an ip address?"""
@@ -8,6 +9,10 @@ def isip(arg):
         return x.version()
     except ValueError:
         return False
+
+_hash_re = re.compile("^[0-9a-fA-F]+$")
+def ishash(arg):
+    return bool(_hash_re.match(arg))
 
 def get_type(arg):
     """Return the type of the argument (mac, ip, hostname, or username)"""
@@ -21,6 +26,9 @@ def get_type(arg):
 
     if ieeemac.ismac(arg):
         return 'mac'
+    #macs can look like hashes, so check them first
+    if ishash(arg):
+        return 'hash'
     ipver = isip(arg)
     if ipver:
         return ip_types[(ipver, '/' in arg)]
