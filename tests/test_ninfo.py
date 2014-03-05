@@ -1,16 +1,7 @@
 import ninfo
+from tests.common import Wrapper
 
-import importlib
 from nose.tools import eq_
-import logging
-
-logging.basicConfig(level=logging.INFO)
-
-class Wrapper:
-    def __init__(self, name):
-        self.name=name
-    def load(self):
-         return importlib.import_module(self.name)
 
 test_plugins = {
     "a": Wrapper("tests.plug_a"),
