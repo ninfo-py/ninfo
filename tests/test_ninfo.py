@@ -51,7 +51,7 @@ def test_plugin_lazy_init():
 
 def test_plugin_compatible_types():
     n=ninfo.Ninfo(plugin_modules=test_plugins)
-    
+
     cases = [
         ("example.com", True),
         ("1.2.3.4", False),
