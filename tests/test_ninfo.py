@@ -48,3 +48,17 @@ def test_plugin_lazy_init():
     assert plugin.initialized is True
 
     eq_(res, "AAAAAAAAAAA")
+
+def test_plugin_compatible_types():
+    n=ninfo.Ninfo(plugin_modules=test_plugins)
+    
+    cases = [
+        ("example.com", True),
+        ("1.2.3.4", False),
+        ("00:11:22:33:44:55", False),
+    ]
+    for arg, expected in cases:
+        yield _plugin_compatible_type_case, n, arg, expected
+
+def _plugin_compatible_type_case(n, arg, expected):
+    assert n.compatible_argument("a", arg) == expected
