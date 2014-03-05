@@ -221,6 +221,14 @@ class Ninfo:
         if 'disabled' in plugin_config:
             return None
 
+        # If this plugin was cloned, merge its config on top of the config from
+        # the cloned plugin
+        if 'clone' in plugin_config:
+            clone_key = 'plugin:' + plugin_config['clone']
+            new_cfg = self.config.get(clone_key, {}).copy()
+            new_cfg.update(plugin_config)
+            plugin_config = new_cfg
+
         try :
             cls = self.plugin_modules[plugin].load().plugin_class
             cls.long_description = cls.__doc__

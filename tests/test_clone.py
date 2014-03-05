@@ -22,4 +22,4 @@ def test_plugin_cloning_cloned_config():
     b = n.get_plugin('b')
 
     eq_(a.plugin_config, {"one": '1', "two": '2'})
-    eq_(b.plugin_config, {"clone": 'a', "one": '1', "two": '2', "three": '3'})
+    eq_(b.plugin_config, {"clone": 'a', "one": 'one', "two": '2', "three": '3'})
