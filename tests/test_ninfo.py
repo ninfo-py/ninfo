@@ -44,5 +44,7 @@ def test_plugin_lazy_init():
 
     assert plugin.initialized is False
 
-    n.get_info("a", "example.com")
+    res = n.get_info("a", "example.com")
     assert plugin.initialized is True
+
+    eq_(res, "AAAAAAAAAAA")
