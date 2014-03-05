@@ -127,11 +127,14 @@ class PluginBase(object):
             return getattr(self, func)
 
 class Ninfo:
-    def __init__(self, config_file=None):
+    def __init__(self, config_file=None, plugin_modules=None):
         self.plugin_instances = {}
-        self.plugin_modules = {}
-        for ep in iter_entry_points(group='ninfo.plugin'):
-            self.plugin_modules[ep.name] = ep
+        if plugin_modules:
+            self.plugin_modules = plugin_modules
+        else:
+            self.plugin_modules = {}
+            for ep in iter_entry_points(group='ninfo.plugin'):
+                self.plugin_modules[ep.name] = ep
 
         self.read_config(config_file)
 
