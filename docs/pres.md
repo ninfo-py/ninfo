@@ -71,7 +71,7 @@ Demo time :-)
 
 # What is a plugin
 
-A plugin is a class containin some metadata and two functions:
+A plugin is a class containing some metadata and two functions:
 
 - setup: perform any one time initialization for the plugin
 - get_info: do whatever it is this plugin does
