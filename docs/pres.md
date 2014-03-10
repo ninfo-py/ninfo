@@ -35,7 +35,7 @@ and has single point of configuration
 and comes with a nice web interface
 
 
-# What does nInfo Look like?
+# What does nInfo look like?
 
 ## Used as a Library
 
@@ -48,7 +48,7 @@ AU - Australia
 Australia
 ~~~~~~~~~~~~~~~~~~
 
-# What does nInfo Look like?
+# What does nInfo look like?
 
 ## Used as a CLI Tool
 
@@ -63,7 +63,7 @@ AU - Australia
 US - United States
 ~~~~~~~~~~~~~~~~~~
 
-# What does nInfo Look like?
+# What does nInfo look like?
 
 ## Web Interface
 
