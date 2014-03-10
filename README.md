@@ -10,6 +10,7 @@ nInfo is a library, CLI tool, and web interface (and lots of plugins) for gather
  * MAC Address
  * Hostname
  * Username
+ * Hashes (as in md5/sha1 etc)
 
 It consists of multiple plugin classes that implement a `get_info` function.
 The classes contain metadata for the type of arguments they accept, and if
