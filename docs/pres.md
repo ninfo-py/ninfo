@@ -81,8 +81,6 @@ A plugin can also contain templates:
 - text: used for the cli tool
 - html: used for the web interface
 
-There are some other optional things plugins can do too!
-
 # Let's write a plugin for the Shodan API
 
 Shodan happens to have a nice python wrapper already.  However, nInfo helps
