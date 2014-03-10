@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Justin Azoff" />
+  <meta name="date" content="2014-03-10" />
+  <title>nInfo: Query all the Things</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">nInfo: Query all the Things</h1>
+  <p class="author">
+Justin Azoff
+  </p>
+  <p class="date">March 10, 2014</p>
+</div>
+<div id="ninfo-query-all-the-things" class="slide section level1">
+<h1>nInfo: Query all the Things</h1>
+<div class="figure">
+<img src="../meme.jpeg" title="Query all the Things" />
+</div>
+</div>
+<div id="what-is-ninfo" class="slide section level1">
+<h1>What is nInfo?</h1>
+<ul>
+<li>nInfo is a Library</li>
+<li>nInfo is a CLI Tool</li>
+<li>nInfo is a Web Interface</li>
+</ul>
+</div>
+<div id="what-is-ninfo-1" class="slide section level1">
+<h1>What is nInfo?</h1>
+<ul>
+<li>nInfo is an API for your APIs</li>
+<li>nInfo is an API for external APIs</li>
+<li>nInfo is an API for things that don't really have an API</li>
+</ul>
+</div>
+<div id="why-ninfo" class="slide section level1">
+<h1>Why nInfo?</h1>
+<p>nInfo provides a <em>uniform</em> API for looking up data</p>
+<div class="incremental">
+<p>that caches results</p>
+</div>
+<div class="incremental">
+<p>and has single point of configuration</p>
+</div>
+<div class="incremental">
+<p>and comes with a nice web interface</p>
+</div>
+</div>
+<div id="ninfo-knows-what-type-of-data-you-are-looking-up" class="slide section level1">
+<h1>nInfo knows what type of data you are looking up</h1>
+<ul>
+<li>IP Address (v4 or v6)</li>
+<li>CIDR Block (v4 or v6)</li>
+<li>MAC Address</li>
+<li>Hostname</li>
+<li>Username</li>
+<li>Hashes (as in md5/sha1 etc)</li>
+</ul>
+</div>
+<div id="what-does-ninfo-look-like" class="slide section level1">
+<h1>What does nInfo look like?</h1>
+<h2 id="used-as-a-library">Used as a Library</h2>
+<pre class="sourceCode python"><code class="sourceCode python">&gt;&gt;&gt; <span class="ch">from</span> ninfo <span class="ch">import</span> Ninfo
+&gt;&gt;&gt; n = Ninfo()
+&gt;&gt;&gt; <span class="dt">print</span> n.get_info_text(<span class="st">&quot;geoip&quot;</span>, <span class="st">&quot;1.2.3.4&quot;</span>)
+AU - Australia
+&gt;&gt;&gt; <span class="dt">print</span> n.get_info(<span class="st">&quot;geoip&quot;</span>, <span class="st">&quot;1.2.3.4&quot;</span>)[<span class="st">&quot;country_name&quot;</span>]
+Australia</code></pre>
+</div>
+<div id="what-does-ninfo-look-like-1" class="slide section level1">
+<h1>What does nInfo look like?</h1>
+<h2 id="used-as-a-cli-tool">Used as a CLI Tool</h2>
+<pre><code>$ ninfo -p geoip 1.2.3.4 4.2.2.2
+=== 1.2.3.4 ===
+*** GeoIP (Geographic IP location) ***
+AU - Australia
+
+=== 4.2.2.2 ===
+*** GeoIP (Geographic IP location) ***
+US - United States</code></pre>
+</div>
+<div id="what-does-ninfo-look-like-2" class="slide section level1">
+<h1>What does nInfo look like?</h1>
+<h2 id="web-interface">Web Interface</h2>
+<p>Demo time :-)</p>
+</div>
+<div id="what-is-a-plugin" class="slide section level1">
+<h1>What is a plugin</h1>
+<p>A plugin is a class containing some metadata and two functions:</p>
+<ul>
+<li>setup: perform any one time initialization for the plugin</li>
+<li>get_info: do whatever it is this plugin does</li>
+</ul>
+<p>A plugin can also contain templates:</p>
+<ul>
+<li>text: used for the cli tool</li>
+<li>html: used for the web interface</li>
+</ul>
+</div>
+<div id="lets-write-a-plugin-for-the-shodan-api" class="slide section level1">
+<h1>Let's write a plugin for the Shodan API</h1>
+<p>Shodan happens to have a nice python wrapper already. However, nInfo helps with the following:</p>
+<ul>
+<li>Importing the right module</li>
+<li>Passing in the required configuration</li>
+<li>Caching the results</li>
+<li>Formatting the output</li>
+</ul>
+</div>
+<div id="plugin-class-and-metadata" class="slide section level1">
+<h1>Plugin class and Metadata</h1>
+<pre class="sourceCode python"><code class="sourceCode python">
+<span class="ch">from</span> ninfo <span class="ch">import</span> PluginBase
+
+<span class="kw">class</span> shodan_plug(PluginBase):
+    <span class="co">&quot;&quot;&quot;This plugin returns any information from Shodan&quot;&quot;&quot;</span>
+    name          = <span class="st">&#39;shodan&#39;</span>
+    title         = <span class="st">&#39;Shodan&#39;</span>
+    description   = <span class="st">&#39;Computer Search Engine&#39;</span>
+    cache_timeout = <span class="dv">60</span>*<span class="dv">60</span>*<span class="dv">2</span>
+    types         = [<span class="st">&#39;ip&#39;</span>]
+    remote        = <span class="ot">False</span>
+
+    <span class="co">#&lt;&lt;setup+get_info&gt;&gt;</span>
+
+plugin_class = shodan_plug</code></pre>
+</div>
+<div id="setup-function" class="slide section level1">
+<h1>Setup function</h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> setup(<span class="ot">self</span>):
+    <span class="ch">from</span> shodan <span class="ch">import</span> WebAPI
+    <span class="ot">self</span>.api = WebAPI(<span class="ot">self</span>.plugin_config[<span class="st">&quot;api_key&quot;</span>])</code></pre>
+</div>
+<div id="get-info-function" class="slide section level1">
+<h1>Get Info function</h1>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> get_info(<span class="ot">self</span>, arg):
+    info = <span class="ot">self</span>.api.host(arg)
+    <span class="kw">return</span> info</code></pre>
+</div>
+<div id="html-template" class="slide section level1">
+<h1>HTML Template</h1>
+<pre class="sourceCode html"><code class="sourceCode html">%for s in data:
+<span class="kw">&lt;h3&gt;</span> Port ${s[&#39;port&#39;]} at ${s[&#39;timestamp&#39;]}<span class="kw">&lt;/h3&gt;</span>
+<span class="kw">&lt;pre&gt;</span>
+Banner ${s[&#39;banner&#39;]}
+<span class="kw">&lt;/pre&gt;</span>
+%endfor</code></pre>
+</div>
+<div id="writing-your-own-plugins" class="slide section level1">
+<h1>Writing your own plugins</h1>
+<p>Plugins need to be part of a python package that is setup in a very specific way. There is a paster template that can help set this up:</p>
+<p>Once installed, a new plugin package can be created with</p>
+<pre><code>paster create -t ninfo_plugin ninfo-plugin-foo</code></pre>
+</div>
+<div id="links" class="slide section level1">
+<h1>Links</h1>
+<ul>
+<li><a href="https://github.com/JustinAzoff/ninfo">github.com/JustinAzoff/ninfo</a></li>
+<li><a href="https://github.com/JustinAzoff/ninfo-web">github.com/JustinAzoff/ninfo-web</a></li>
+<li><a href="https://github.com/JustinAzoff/django-ninfo">github.com/JustinAzoff/django-ninfo</a></li>
+<li><a href="https://github.com/JustinAzoff/ninfo-plugin-template">github.com/JustinAzoff/ninfo-plugin-template</a></li>
+<li><a href="https://github.com/search?p=1&amp;q=ninfo-plugins&amp;ref=searchresults&amp;type=Repositories">Search github for ninfo-plugin</a></li>
+</ul>
+</div>
+</body>
+</html>
