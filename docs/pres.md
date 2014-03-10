@@ -150,9 +150,8 @@ Banner ${s['banner']}
 # Writing your own plugins
 
 Plugins need to be part of a python package that is setup in a very specific
-way.  There is a paster template that can help set this up:
-
-Once installed, a new plugin package can be created with
+way.  There is a paster template that can help set this up.  Once installed, a
+new plugin package can be created with:
 
     paster create -t ninfo_plugin ninfo-plugin-foo
 
