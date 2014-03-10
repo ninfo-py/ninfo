@@ -144,6 +144,7 @@ def get_info(self, arg):
 <pre>
 Banner ${s['banner']}
 </pre>
+%endfor
 ~~~~~~~~~~~~~~~~~~
 
 # Writing your own plugins
