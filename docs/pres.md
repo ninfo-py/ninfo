@@ -93,7 +93,7 @@ with the following:
 - Caching the results
 - Formatting the output
 
-# Plugin class and Meta Data
+# Plugin class and Metadata
 
 ~~~~~~~~~~~~~~~~~~ {.python}
 
