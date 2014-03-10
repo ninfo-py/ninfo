@@ -151,8 +151,16 @@ Banner ${s['banner']}
 Plugins need to be part of a python package that is setup in a very specific
 way.  There is a paster template that can help set this up:
 
-<https://github.com/JustinAzoff/ninfo-plugin-template>
-
 Once installed, a new plugin package can be created with
 
     paster create -t ninfo_plugin ninfo-plugin-foo
+
+
+# Links
+
+- [github.com/JustinAzoff/ninfo](https://github.com/JustinAzoff/ninfo)
+- [github.com/JustinAzoff/ninfo-web](https://github.com/JustinAzoff/ninfo-web)
+- [github.com/JustinAzoff/django-ninfo](https://github.com/JustinAzoff/django-ninfo)
+- [github.com/JustinAzoff/ninfo-plugin-template](https://github.com/JustinAzoff/ninfo-plugin-template)
+
+- [Search github for ninfo-plugin](https://github.com/search?p=1&q=ninfo-plugins&ref=searchresults&type=Repositories)
