@@ -34,6 +34,15 @@ and has single point of configuration
 
 and comes with a nice web interface
 
+# nInfo knows what type of data you are looking up
+
+- IP Address (v4 or v6)
+- CIDR Block (v4 or v6)
+- MAC Address
+- Hostname
+- Username
+- Hashes (as in md5/sha1 etc)
+
 
 # What does nInfo look like?
 
