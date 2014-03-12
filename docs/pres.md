@@ -162,4 +162,5 @@ new plugin package can be created with:
 - [github.com/JustinAzoff/ninfo_web](https://github.com/JustinAzoff/ninfo_web)
 - [github.com/JustinAzoff/django-ninfo](https://github.com/JustinAzoff/django-ninfo)
 - [github.com/JustinAzoff/ninfo-plugin-template](https://github.com/JustinAzoff/ninfo-plugin-template)
+- [github.com/JustinAzoff/ninfo-client](https://github.com/JustinAzoff/ninfo-client)
 - [Search github for ninfo-plugin](https://github.com/search?p=1&q=ninfo-plugins&ref=searchresults&type=Repositories)
