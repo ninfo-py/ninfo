@@ -154,3 +154,9 @@ See Also
 
 * Plugins - https://github.com/JustinAzoff/ninfo_plugins/
 * Web Interface - https://github.com/JustinAzoff/ninfo_web/
+
+* [ninfo_web](https://github.com/JustinAzoff/ninfo_web) - basic web interface
+* [django-ninfo](https://github.com/JustinAzoff/django-ninfo) - ninfo integrated with django
+* [ninfo-plugin-template](https://github.com/JustinAzoff/ninfo-plugin-template) - paster template for creating plugins
+* [ninfo-client](https://github.com/JustinAzoff/ninfo-client) - REST client for ninfo_web or django-ninfo
+* [Search github for ninfo-plugin](https://github.com/search?p=1&q=ninfo-plugins&ref=searchresults&type=Repositories) - more plugins
