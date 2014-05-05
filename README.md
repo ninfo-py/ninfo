@@ -152,9 +152,6 @@ configuration file and optionally overriding the plugin metadata:
 See Also
 --------
 
-* Plugins - https://github.com/JustinAzoff/ninfo_plugins/
-* Web Interface - https://github.com/JustinAzoff/ninfo_web/
-
 * [ninfo_web](https://github.com/JustinAzoff/ninfo_web) - basic web interface
 * [django-ninfo](https://github.com/JustinAzoff/django-ninfo) - ninfo integrated with django
 * [ninfo-plugin-template](https://github.com/JustinAzoff/ninfo-plugin-template) - paster template for creating plugins
