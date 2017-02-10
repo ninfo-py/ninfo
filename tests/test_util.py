@@ -27,6 +27,8 @@ def test_get_type():
         ("2001:4860:800e::0/48", "cidr6"),
         ("2eadc4e74f9d03f3bd8e9865000d282ecb96f108", "hash"),
         ("69fe264e8ff51121841b0896908c419923c0e31352100ca55a0740d6a00fe9a4", "hash"),
+        ("127.0.0.1:80", "hostport"),
+        ("https://192.168.2.1:443", "url"),
     )
     for x, t in cases:
         yield type_case, x, t

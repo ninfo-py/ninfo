@@ -15,7 +15,7 @@ def ishash(arg):
     return bool(_hash_re.match(arg))
 
 def get_type(arg):
-    """Return the type of the argument (mac, ip, hostname, or username)"""
+    """Return the type of the argument (mac, ip, hostname, url, hostport, or username)"""
 
     ip_types = {
         (4, False): "ip",
@@ -36,6 +36,9 @@ def get_type(arg):
     parts = arg.split(':')
     if len(parts) == 2 and parts[1].isdigit():
         return 'hostport'
+
+    if '://' in arg:
+        return 'url'
 
     if '.' in arg:
         return 'hostname'
