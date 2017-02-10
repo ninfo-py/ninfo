@@ -32,6 +32,11 @@ def get_type(arg):
     ipver = isip(arg)
     if ipver:
         return ip_types[(ipver, '/' in arg)]
+
+    parts = arg.split(':')
+    if len(parts) == 2 and parts[1].isdigit():
+        return 'hostport'
+
     if '.' in arg:
         return 'hostname'
     
