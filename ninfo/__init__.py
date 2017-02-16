@@ -335,7 +335,7 @@ class Ninfo:
                 if (arg_type, to_type) in p.converters:
                     p.init()
                     yield p.name, p.get_converter(arg_type, to_type)(arg)
-            except PluginError:
+            except Exception:
                 logger.exception("Error running plugin %s", p.name)
 
 def main():
