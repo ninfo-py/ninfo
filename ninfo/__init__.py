@@ -89,6 +89,8 @@ class PluginBase(object):
         return self.render_template('html', arg, result)
 
     def _do_render(self, filename, arg, result):
+        if filename is None:
+            return str(result)
         kw = {}
         if 'html' in filename:
             kw['default_filters'] = ['h']
@@ -106,9 +108,6 @@ class PluginBase(object):
             if out:
                 out = "<pre>" + out + "</pre>"
             return out
-
-        if filename is None:
-            return str(result)
 
         out = self._do_render(filename, arg, result)
         return out
