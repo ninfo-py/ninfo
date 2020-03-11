@@ -6,7 +6,11 @@ import logging
 logger = logging.getLogger("ninfo")
 
 import os
-import ConfigParser
+
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
 from mako.template import Template
 
@@ -55,7 +59,7 @@ class PluginBase(object):
         try :
             self.initialized = (self.setup() != False)
             return self.initialized
-        except Exception, e:
+        except Exception as e:
             logger.exception("Error initializing plugin %s" % self.name)
             raise PluginInitError("Error initializing plugin %s" % self.name, cause=e)
 
@@ -147,7 +151,8 @@ class Ninfo:
         elif os.getenv("INFO_CONFIG_FILE"):
             cp.read([os.getenv("INFO_CONFIG_FILE")])
         else:
-            cp.read(["ninfo.ini","/etc/ninfo.ini"])
+            cp.read(["/etc/ninfo.conf", os.path.expanduser('~/.ninfo.ini'), "ninfo.ini"])
+            #cp.read(["ninfo.ini",os.path.expanduser("~/.ninfo.ini"),"/etc/ninfo.ini"])
         #return a simple nested dictionary structure from the config
         self.config = dict((s, dict(cp.items(s))) for s in cp.sections())
 
@@ -280,7 +285,7 @@ class Ninfo:
             return ret
         except PluginInitError:
             raise
-        except Exception, e:
+        except Exception as e:
             logger.exception("Error running plugin %s" % plugin)
             if retries:
                 return self.get_info(plugin, arg, options, retries-1)
@@ -324,8 +329,8 @@ class Ninfo:
 
     def show_info(self, arg, plugins=None, options={}):
         for p, result in self.get_info_iter(arg, plugins, options):
-            print '*** %s (%s) ***' % (p.title, p.description)
-            print p.render_template('text', arg, result)
+            print('*** %s (%s) ***' % (p.title, p.description))
+            print(p.render_template('text', arg, result))
 
     def convert(self, arg, to_type):
         arg_type = util.get_type(arg)
@@ -351,9 +356,9 @@ def main():
 
     p = Ninfo()
     if options.list:
-        print "%-20s %-20s %s" %("Name", "Title", "Description")
+        print("%-20s %-20s %s" % ("Name", "Title", "Description"))
         for pl in p.plugins:
-            print "%-20s %-20s %s" % (pl.name, pl.title, pl.description)
+            print("%-20s %-20s %s" % (pl.name, pl.title, pl.description))
         return
 
     context_options = {}
@@ -368,7 +373,7 @@ def main():
     plugins = options.plugins or None
     for arg in args:
         if len(args) != 1:
-            print "=== %s === " % (arg)
+            print("=== %s === " % (arg,))
         p.show_info(arg, plugins=plugins, options=context_options)
 
 if __name__ == "__main__":
