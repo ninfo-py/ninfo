@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='ninfo',
-    version='0.6.3',
+    version='0.7.0',
     zip_safe=False,
     packages = find_packages(exclude=["tests"]),
     include_package_data=True,
