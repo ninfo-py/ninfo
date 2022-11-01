@@ -28,3 +28,6 @@ docs/_build
 
 # VS Code
 .vscode/
+
+# Test ninfo.ini
+ninfo.ini
