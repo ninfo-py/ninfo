@@ -48,6 +48,8 @@ def get_type(arg):
     
     potential_types.append("username")
 
+    return potential_types
+
 def is_local(networks, ip):
     """Return True if `ip` is in `networks`"""
     for n in networks:
