@@ -22,3 +22,9 @@ pip-log.txt
 *.db
 
 docs/_build
+
+# Virtual environment
+.venv/
+
+# VS Code
+.vscode/

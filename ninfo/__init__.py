@@ -190,29 +190,31 @@ class Ninfo:
         self.local_networks = [IPy.IP(n) for n in networks_str.split(",")]
 
     def is_local(self, arg):
-        if util.get_type(arg) not in ["ip", "ip6"]:
-            return False
-
-        return util.is_local(self.local_networks, arg)
+        for t in util.get_type(arg):
+            if t in ["ip", "ip6"]:
+                return util.is_local(self.local_networks, arg)
+        return False                
 
     def compatible_argument(self, plugin, arg):
         plug = self.get_plugin(plugin)
         if not plug:
             logger.debug("Skipping plugin %s because plugin does not exist" % plugin)
             return False
-        arg_type = util.get_type(arg)
-        if arg_type not in plug.types:
-            logger.debug("Skipping plugin %s because arg is the wrong type" % plugin)
-            return False
-
-        if arg_type in ['ip', 'ip6']:
-            if plug.local == False and self.is_local(arg):
-                logger.debug("Skipping plugin %s because arg is local" % plugin)
-                return False
-            if plug.remote == False and not self.is_local(arg):
-                logger.debug("Skipping plugin %s because arg is remote" % plugin)
-                return False
-        return True
+        potential_arg_types = util.get_type(arg)
+        for arg_type in potential_arg_types:
+            if arg_type in plug.types:
+                if arg_type in ["ip", "ip6"]:
+                    if plug.local == False and self.is_local(arg):
+                        logger.debug("Skipping plugin %s because arg is local" % plugin)
+                        return False
+                    if plug.remote == False and not self.is_local(arg):
+                        logger.debug(
+                            "Skipping plugin %s because arg is remote" % plugin
+                        )
+                        return False
+                return True
+        logger.debug("Skipping plugin %s because arg is the wrong type" % plugin)
+        return False
 
     def get_plugin(self, plugin):
         if plugin not in self.plugin_modules:
@@ -333,14 +335,15 @@ class Ninfo:
             print(p.render_template('text', arg, result))
 
     def convert(self, arg, to_type):
-        arg_type = util.get_type(arg)
+        potential_arg_types = util.get_type(arg)
         for p in self.plugins:
-            try:
-                if (arg_type, to_type) in p.converters:
-                    p.init()
-                    yield p.name, p.get_converter(arg_type, to_type)(arg)
-            except Exception:
-                logger.exception("Error running plugin %s", p.name)
+            for arg_type in potential_arg_types:
+                try:
+                    if (arg_type, to_type) in p.converters:
+                        p.init()
+                        yield p.name, p.get_converter(arg_type, to_type)(arg)
+                except Exception:
+                    logger.exception("Error running plugin %s", p.name)
 
 def main():
     logging.basicConfig(level=logging.INFO)
