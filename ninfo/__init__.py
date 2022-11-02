@@ -11,7 +11,6 @@ try:
     import ConfigParser
 except ImportError:
     import configparser as ConfigParser
-import configparser as ConfigParser
 
 from mako.template import Template
 
