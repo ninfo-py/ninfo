@@ -37,13 +37,11 @@ def get_type(arg):
         potential_types.append(ip_types[(ipver, "/" in arg)])
 
     parts = arg.split(':')
-    if len(parts) == 2 and parts[1].isdigit():
-        potential_types.append("hostport")
-
     if '://' in arg:
         potential_types.append("url")
-
-    if '.' in arg:
+    elif len(parts) == 2 and parts[1].isdigit():
+        potential_types.append("hostport")
+    elif '.' in arg:
         potential_types.append("hostname")
     
     potential_types.append("username")
