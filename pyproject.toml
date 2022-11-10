@@ -1,0 +1,48 @@
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ninfo"
+version = "0.7.0"
+description = "Plugin based information gathering library"
+readme = "README.md"
+authors = [{ name = "Justin Azoff", email = "justin.azoff@gmail.com" }, { name = "Ryan Goggin", email = "support@ryangoggin.net" }]
+#license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["ninfo", "search"] 
+dependencies = [
+    "Mako",
+    "python-memcached",
+    "ieeemac",
+    "IPy",
+]
+requires-python = ">=2.7"
+
+[project.optional-dependencies]
+dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
+splunk = ["splunk-sdk"]
+
+[project.urls]
+Homepage = "https://github.com/ninfo-py/ninfo"
+
+[project.scripts]
+ninfo = "ninfo:main"
+
+[tool.bumpver]
+current_version = "0.7.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message  = "Bump version {old_version} -> {new_version}"
+commit          = true
+tag             = true
+push            = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
+"ninfo/__init__.py" = ['^__version__ = "{version}"$']
+"setup.py" = ["version='{version}'"]
