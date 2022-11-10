@@ -5,6 +5,7 @@ __version__ = "0.8.0"
 import memcache
 
 import logging
+
 logger = logging.getLogger("ninfo")
 
 import os
@@ -21,21 +22,24 @@ import inspect
 from ninfo import util
 import IPy
 
+
 def clean_cache_key(s):
-    return ''.join(c for c in s if 32 < ord(c) < 127).encode("utf-8")
+    return "".join(c for c in s if 32 < ord(c) < 127).encode("utf-8")
 
 
 class PluginError(Exception):
     def __init__(self, message, cause):
-        super(PluginError, self).__init__(message + u', caused by ' + repr(cause))
+        super(PluginError, self).__init__(message + ", caused by " + repr(cause))
         self.cause = cause
+
 
 class PluginInitError(PluginError):
     pass
 
+
 class PluginBase(object):
 
-    cache_timeout = 60*60
+    cache_timeout = 60 * 60
     local = True
     remote = True
     template = True
@@ -52,14 +56,14 @@ class PluginBase(object):
         self.plugin_config = plugin_config
         self.initialized = False
         self._name = self.name
-        if 'disabled' in plugin_config:
+        if "disabled" in plugin_config:
             return
 
     def init(self):
         if self.initialized:
             return True
-        try :
-            self.initialized = (self.setup() != False)
+        try:
+            self.initialized = self.setup() != False
             return self.initialized
         except Exception as e:
             logger.exception("Error initializing plugin %s" % self.name)
@@ -67,14 +71,14 @@ class PluginBase(object):
 
     def as_json(self):
         return {
-            'name': self.name,
-            'title': self.title,
-            'description': self.description,
-            'long_description': self.long_description,
-            'cache_timeout': self.cache_timeout,
-            'types': self.types,
-            'local': self.local,
-            'remote': self.remote,
+            "name": self.name,
+            "title": self.title,
+            "description": self.description,
+            "long_description": self.long_description,
+            "cache_timeout": self.cache_timeout,
+            "types": self.types,
+            "local": self.local,
+            "remote": self.remote,
         }
 
     def setup(self):
@@ -88,28 +92,34 @@ class PluginBase(object):
 
     def get_info_text(self, arg):
         result = self.get_info(arg)
-        return self.render_template('text', arg, result)
+        return self.render_template("text", arg, result)
 
     def get_info_html(self, arg):
         result = self.get_info(arg)
-        return self.render_template('html', arg, result)
+        return self.render_template("html", arg, result)
 
     def _do_render(self, filename, arg, result):
         if filename is None:
             return str(result)
         kw = {}
-        if 'html' in filename:
-            kw['default_filters'] = ['h']
+        if "html" in filename:
+            kw["default_filters"] = ["h"]
         t = Template(filename=filename, **kw)
-        out = t.render(arg=arg, plugin=self, config=self.config, plugin_config=self.plugin_config, **result)
+        out = t.render(
+            arg=arg,
+            plugin=self,
+            config=self.config,
+            plugin_config=self.plugin_config,
+            **result
+        )
         return out.lstrip()
 
     def render_template(self, output_type, arg, result):
         if not result:
-            return ''
+            return ""
         filename = self.get_template(output_type)
-        if filename is None and output_type == 'html':
-            filename = self.get_template('text')
+        if filename is None and output_type == "html":
+            filename = self.get_template("text")
             out = self._do_render(filename, arg, result)
             if out:
                 out = "<pre>" + out + "</pre>"
@@ -127,9 +137,10 @@ class PluginBase(object):
             return template
 
     def get_converter(self, a, b):
-        func = self.converters.get((a,b))
+        func = self.converters.get((a, b))
         if func:
             return getattr(self, func)
+
 
 class Ninfo:
     def __init__(self, config_file=None, plugin_modules=None):
@@ -138,7 +149,7 @@ class Ninfo:
             self.plugin_modules = plugin_modules
         else:
             self.plugin_modules = {}
-            for ep in iter_entry_points(group='ninfo.plugin'):
+            for ep in iter_entry_points(group="ninfo.plugin"):
                 self.plugin_modules[ep.name] = ep
 
         self.read_config(config_file)
@@ -153,9 +164,11 @@ class Ninfo:
         elif os.getenv("INFO_CONFIG_FILE"):
             cp.read([os.getenv("INFO_CONFIG_FILE")])
         else:
-            cp.read(["/etc/ninfo.conf", os.path.expanduser('~/.ninfo.ini'), "ninfo.ini"])
-            #cp.read(["ninfo.ini",os.path.expanduser("~/.ninfo.ini"),"/etc/ninfo.ini"])
-        #return a simple nested dictionary structure from the config
+            cp.read(
+                ["/etc/ninfo.conf", os.path.expanduser("~/.ninfo.ini"), "ninfo.ini"]
+            )
+            # cp.read(["ninfo.ini",os.path.expanduser("~/.ninfo.ini"),"/etc/ninfo.ini"])
+        # return a simple nested dictionary structure from the config
         self.config = dict((s, dict(cp.items(s))) for s in cp.sections())
 
         # Remove disabled plugins
@@ -165,7 +178,10 @@ class Ninfo:
                 try:
                     del self.plugin_modules[plugin_name]
                 except KeyError:
-                    logger.debug("Plugin %s is disabled in .ini file, but was not found." % plugin_name)
+                    logger.debug(
+                        "Plugin %s is disabled in .ini file, but was not found."
+                        % plugin_name
+                    )
                 else:
                     logger.info("Plugin %s disabled via .ini file." % plugin_name)
 
@@ -177,25 +193,25 @@ class Ninfo:
                 plugin_name = section.split(":")[1]
                 self.plugin_modules[plugin_name] = self.plugin_modules[clone]
 
-        if 'general' not in self.config:
+        if "general" not in self.config:
             self.cache = None
             self.local_networks = []
             return
 
-        self.cache_host = self.config['general'].get('memcache_host')
+        self.cache_host = self.config["general"].get("memcache_host")
         if self.cache_host:
             self.cache = memcache.Client([self.cache_host])
         else:
             self.cache = None
 
-        networks_str = self.config['general'].get('local_networks','')
+        networks_str = self.config["general"].get("local_networks", "")
         self.local_networks = [IPy.IP(n) for n in networks_str.split(",")]
 
     def is_local(self, arg):
         for t in util.get_type(arg):
             if t in ["ip", "ip6"]:
                 return util.is_local(self.local_networks, arg)
-        return False                
+        return False
 
     def compatible_argument(self, plugin, arg):
         plug = self.get_plugin(plugin)
@@ -224,20 +240,20 @@ class Ninfo:
         if plugin in self.plugin_instances:
             return self.plugin_instances[plugin]
 
-        plugin_config_key = 'plugin:' + plugin
+        plugin_config_key = "plugin:" + plugin
         plugin_config = self.config.get(plugin_config_key, {})
-        if 'disabled' in plugin_config:
+        if "disabled" in plugin_config:
             return None
 
         # If this plugin was cloned, merge its config on top of the config from
         # the cloned plugin
-        if 'clone' in plugin_config:
-            clone_key = 'plugin:' + plugin_config['clone']
+        if "clone" in plugin_config:
+            clone_key = "plugin:" + plugin_config["clone"]
             new_cfg = self.config.get(clone_key, {}).copy()
             new_cfg.update(plugin_config)
             plugin_config = new_cfg
 
-        try :
+        try:
             cls = self.plugin_modules[plugin].load().plugin_class
             cls.long_description = cls.__doc__
         except:
@@ -247,9 +263,9 @@ class Ninfo:
             return
 
         instance = cls(config=self.config, plugin_config=plugin_config)
-        #override any plugin metadata for the case of cloned plugins(or otherwise)
+        # override any plugin metadata for the case of cloned plugins(or otherwise)
         instance.name = plugin
-        for field in 'name', 'title', 'description':
+        for field in "name", "title", "description":
             if field in plugin_config:
                 setattr(instance, field, plugin_config[field])
         self.plugin_instances[plugin] = instance
@@ -267,8 +283,14 @@ class Ninfo:
         plugin_obj = self.get_plugin(plugin)
         timeout = plugin_obj.cache_timeout
         if self.cache and timeout:
-            KEY = 'ninfo:%s:%s' % (plugin, arg)
-            KEY += ":" + ":".join(['%s=%s' % (key, value) for (key, value) in options.items() if key in plugin_obj.options])
+            KEY = "ninfo:%s:%s" % (plugin, arg)
+            KEY += ":" + ":".join(
+                [
+                    "%s=%s" % (key, value)
+                    for (key, value) in options.items()
+                    if key in plugin_obj.options
+                ]
+            )
             # Remove non-alphanumerics from key, to be safe
             KEY = clean_cache_key(KEY)
             ret = self.cache.get(KEY)
@@ -292,8 +314,8 @@ class Ninfo:
         except Exception as e:
             logger.exception("Error running plugin %s" % plugin)
             if retries:
-                return self.get_info(plugin, arg, options, retries-1)
-            raise PluginError("Error running plugin %s"% plugin, cause=e)
+                return self.get_info(plugin, arg, options, retries - 1)
+            raise PluginError("Error running plugin %s" % plugin, cause=e)
 
     def get_info_json(self, plugin, arg, options={}):
         result = self.get_info(plugin, arg, options)
@@ -305,13 +327,13 @@ class Ninfo:
         result = self.get_info(plugin, arg, options)
 
         p = self.get_plugin(plugin)
-        return p.render_template('text', arg, result)
+        return p.render_template("text", arg, result)
 
     def get_info_html(self, plugin, arg, options={}):
         result = self.get_info(plugin, arg, options)
 
         p = self.get_plugin(plugin)
-        return p.render_template('html', arg, result)
+        return p.render_template("html", arg, result)
 
     def get_info_iter(self, arg, plugins=None, options={}):
         for p in sorted(self.plugins, key=lambda p: p.name):
@@ -319,7 +341,7 @@ class Ninfo:
                 continue
             if not self.compatible_argument(p.name, arg):
                 continue
-            try :
+            try:
                 result = self.get_info(p.name, arg, options)
                 yield p, result
             except PluginError:
@@ -333,8 +355,8 @@ class Ninfo:
 
     def show_info(self, arg, plugins=None, options={}):
         for p, result in self.get_info_iter(arg, plugins, options):
-            print('*** %s (%s) ***' % (p.title, p.description))
-            print(p.render_template('text', arg, result))
+            print("*** %s (%s) ***" % (p.title, p.description))
+            print(p.render_template("text", arg, result))
 
     def convert(self, arg, to_type):
         potential_arg_types = util.get_type(arg)
@@ -347,14 +369,15 @@ class Ninfo:
                 except Exception:
                     logger.exception("Error running plugin %s", p.name)
 
+
 def main():
     logging.basicConfig(level=logging.INFO)
-    #requests logs stuff at level INFO
+    # requests logs stuff at level INFO
     logging.getLogger("requests.packages.urllib3").setLevel(logging.ERROR)
 
-
     from optparse import OptionParser
-    parser = OptionParser(usage = "usage: %prog [options] [addresses]")
+
+    parser = OptionParser(usage="usage: %prog [options] [addresses]")
     parser.add_option("-p", "--plugin", dest="plugins", action="append", default=None)
     parser.add_option("-l", "--list", dest="list", action="store_true", default=False)
     (options, complete_args) = parser.parse_args()
@@ -380,6 +403,7 @@ def main():
         if len(args) != 1:
             print("=== %s === " % (arg,))
         p.show_info(arg, plugins=plugins, options=context_options)
+
 
 if __name__ == "__main__":
     main()

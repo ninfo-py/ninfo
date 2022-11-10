@@ -2,6 +2,7 @@ import ieeemac
 import IPy
 import re
 
+
 def isip(arg):
     """is arg an ip address?"""
     try:
@@ -10,9 +11,13 @@ def isip(arg):
     except ValueError:
         return False
 
+
 _hash_re = re.compile("^[0-9a-fA-F]+$")
+
+
 def ishash(arg):
     return bool(_hash_re.match(arg))
+
 
 def get_type(arg):
     """Return a list of possible types for the type of the
@@ -29,24 +34,25 @@ def get_type(arg):
 
     if ieeemac.ismac(arg):
         potential_types.append("mac")
-    #macs can look like hashes, so check them first
+    # macs can look like hashes, so check them first
     if ishash(arg):
         potential_types.append("hash")
     ipver = isip(arg)
     if ipver:
         potential_types.append(ip_types[(ipver, "/" in arg)])
 
-    parts = arg.split(':')
-    if '://' in arg:
+    parts = arg.split(":")
+    if "://" in arg:
         potential_types.append("url")
     elif len(parts) == 2 and parts[1].isdigit():
         potential_types.append("hostport")
-    elif '.' in arg:
+    elif "." in arg:
         potential_types.append("hostname")
-    
+
     potential_types.append("username")
 
     return potential_types
+
 
 def is_local(networks, ip):
     """Return True if `ip` is in `networks`"""
@@ -54,6 +60,7 @@ def is_local(networks, ip):
         if ip in n:
             return True
     return False
+
 
 def parse_query(s):
     """Split the query up into arguments and options
@@ -63,8 +70,8 @@ def parse_query(s):
     args = []
     options = {}
 
-    #regex too complicated, state machine easy
-    #first split the string into components, respecting quotes
+    # regex too complicated, state machine easy
+    # first split the string into components, respecting quotes
     parts = []
     in_quote = False
     p = ""
@@ -72,7 +79,7 @@ def parse_query(s):
         if l.isspace() and not in_quote:
             parts.append(p)
             p = ""
-        elif l in '"\'' and not in_quote:
+        elif l in "\"'" and not in_quote:
             in_quote = l
         elif l == in_quote:
             in_quote = False
@@ -81,55 +88,57 @@ def parse_query(s):
     if p:
         parts.append(p)
 
-    #now separate each argument or option
+    # now separate each argument or option
     for arg in parts:
-        if '=' in arg and "//" not in arg: #has a = but doesn't look like a URL
+        if "=" in arg and "//" not in arg:  # has a = but doesn't look like a URL
             k, v = arg.split("=", 1)
-            v = v.strip('"') # remove the quotes
+            v = v.strip('"')  # remove the quotes
             options[k] = v
         else:
             args.append(arg)
     return args, options
 
+
 def fmt_dict_array(ar, order=None, header=True):
-    #allow for an empty array
-    #if the array is empty and no order is paseed, return ""
-    #otherwise generate just the header
+    # allow for an empty array
+    # if the array is empty and no order is paseed, return ""
+    # otherwise generate just the header
     if not ar:
         if not order:
             return ""
-        first = dict([(x,x) for x in order])
-    else :
+        first = dict([(x, x) for x in order])
+    else:
         first = ar[0]
-    if header: #insert a new row of just the keys, the next loop will do the rest
-        new = dict([(x,str(x).capitalize()) for x in first.keys()]) 
+    if header:  # insert a new row of just the keys, the next loop will do the rest
+        new = dict([(x, str(x).capitalize()) for x in first.keys()])
         new = [new]
-    else :
+    else:
         new = []
-    #figure out what the longest column in each row is
-    maxes = dict([(a,len(str(b))) for a,b in first.items()])
+    # figure out what the longest column in each row is
+    maxes = dict([(a, len(str(b))) for a, b in first.items()])
     for x in new + ar:
         for k, v in x.items():
             size = len(str(v))
             if size > maxes[k]:
                 maxes[k] = size
-    
-    maxesfmt = dict([(x, "%%-%ds" % (y+1)) for x,y in  maxes.items()])
+
+    maxesfmt = dict([(x, "%%-%ds" % (y + 1)) for x, y in maxes.items()])
     if order:
         it = order
-    else :
-        it = first #will iterate over the keys however
-    
+    else:
+        it = first  # will iterate over the keys however
+
     table = []
 
     for x in new + ar:
         row = []
         for c in it:
-            row.append( maxesfmt[c] % x[c] )
+            row.append(maxesfmt[c] % x[c])
         line = " ".join(row).strip()
         table.append(line)
 
     return "\n".join(table)
+
 
 def unique(lst):
     out = []
