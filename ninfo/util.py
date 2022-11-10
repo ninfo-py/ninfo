@@ -15,7 +15,10 @@ def ishash(arg):
     return bool(_hash_re.match(arg))
 
 def get_type(arg):
-    """Return the type of the argument (mac, ip, hostname, url, hostport, or username)"""
+    """Return a list of possible types for the type of the
+    argument (mac, ip, hostname, url,hostport, and/or username)"""
+
+    potential_types = []
 
     ip_types = {
         (4, False): "ip",
@@ -25,25 +28,25 @@ def get_type(arg):
     }
 
     if ieeemac.ismac(arg):
-        return 'mac'
+        potential_types.append("mac")
     #macs can look like hashes, so check them first
     if ishash(arg):
-        return 'hash'
+        potential_types.append("hash")
     ipver = isip(arg)
     if ipver:
-        return ip_types[(ipver, '/' in arg)]
+        potential_types.append(ip_types[(ipver, "/" in arg)])
 
     parts = arg.split(':')
-    if len(parts) == 2 and parts[1].isdigit():
-        return 'hostport'
-
     if '://' in arg:
-        return 'url'
-
-    if '.' in arg:
-        return 'hostname'
+        potential_types.append("url")
+    elif len(parts) == 2 and parts[1].isdigit():
+        potential_types.append("hostport")
+    elif '.' in arg:
+        potential_types.append("hostname")
     
-    return 'username'
+    potential_types.append("username")
+
+    return potential_types
 
 def is_local(networks, ip):
     """Return True if `ip` is in `networks`"""
