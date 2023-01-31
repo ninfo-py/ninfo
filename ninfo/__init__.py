@@ -1,6 +1,6 @@
 from pkg_resources import iter_entry_points
 
-__version__ = "0.8.1"
+__version__ = "0.9.0"
 
 import memcache
 

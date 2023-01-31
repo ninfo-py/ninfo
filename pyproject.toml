@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ninfo"
-version = "0.8.1"
+version = "0.9.0"
 description = "Plugin based information gathering library"
 readme = "README.md"
 authors = [{ name = "Justin Azoff", email = "justin.azoff@gmail.com" }, { name = "Ryan Goggin", email = "support@ryangoggin.net" }]
@@ -35,7 +35,7 @@ Homepage = "https://github.com/ninfo-py/ninfo"
 ninfo = "ninfo:main"
 
 [tool.bumpver]
-current_version = "0.8.1"
+current_version = "0.9.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} -> {new_version}"
 commit          = true
