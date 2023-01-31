@@ -46,7 +46,7 @@ def get_type(arg):
         potential_types.append("url")
     elif len(parts) == 2 and parts[1].isdigit():
         potential_types.append("hostport")
-    elif "." in arg:
+    elif "." in arg and not ipver:
         potential_types.append("hostname")
 
     potential_types.append("username")
