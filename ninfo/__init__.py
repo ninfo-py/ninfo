@@ -1,6 +1,6 @@
 from pkg_resources import iter_entry_points
 
-__version__ = "0.8.1"
+__version__ = "0.9.0"
 
 import memcache
 
@@ -17,7 +17,12 @@ except ImportError:
 
 from mako.template import Template
 
-import inspect
+try:
+    from inspect import getargspec
+except ImportError:
+    from inspect import getfullargspec as getargspec
+
+from inspect import getsourcefile
 
 from ninfo import util
 import IPy
@@ -129,7 +134,7 @@ class PluginBase(object):
         return out
 
     def get_template(self, output_type):
-        code = inspect.getsourcefile(self.__class__)
+        code = getsourcefile(self.__class__)
         path = os.path.dirname(code)
         filename = "%s_template_%s.mako" % (self._name, output_type)
         template = os.path.join(path, filename)
@@ -299,7 +304,7 @@ class Ninfo:
 
         try:
             plugin_obj.init()
-            get_info_args = len(inspect.getargspec(plugin_obj.get_info)[0])
+            get_info_args = len(getargspec(plugin_obj.get_info)[0])
             if get_info_args == 3:
                 # This plugin supports context.
                 ret = plugin_obj.get_info(arg, options)
