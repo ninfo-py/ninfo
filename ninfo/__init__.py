@@ -426,7 +426,7 @@ def main():
     plugins = options.plugins or None
     json_output = []
     for arg in args:
-        if len(args) != 1:
+        if len(args) != 1 and not options.json:
             print("=== %s === " % (arg,))
         if options.json:
             json_output.append({"arg": arg, "data": p.get_info_dict(arg, plugins=plugins, options=context_options)})
