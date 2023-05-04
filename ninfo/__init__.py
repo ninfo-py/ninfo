@@ -3,7 +3,6 @@ from pkg_resources import iter_entry_points
 __version__ = "0.9.0"
 
 import memcache
-
 import logging
 
 logger = logging.getLogger("ninfo")
@@ -14,6 +13,8 @@ try:
     import ConfigParser
 except ImportError:
     import configparser as ConfigParser
+
+import json
 
 from mako.template import Template
 
@@ -43,7 +44,6 @@ class PluginInitError(PluginError):
 
 
 class PluginBase(object):
-
     cache_timeout = 60 * 60
     local = True
     remote = True
@@ -61,6 +61,11 @@ class PluginBase(object):
         self.plugin_config = plugin_config
         self.initialized = False
         self._name = self.name
+        self._template = self.name
+
+        if "template_override" in plugin_config:
+            self._template = plugin_config["template_override"]
+
         if "disabled" in plugin_config:
             return
 
@@ -136,7 +141,7 @@ class PluginBase(object):
     def get_template(self, output_type):
         code = getsourcefile(self.__class__)
         path = os.path.dirname(code)
-        filename = "%s_template_%s.mako" % (self._name, output_type)
+        filename = "%s_template_%s.mako" % (self._template, output_type)
         template = os.path.join(path, filename)
         if os.path.exists(template):
             return template
@@ -352,9 +357,9 @@ class Ninfo:
             except PluginError:
                 logger.exception("Error running plugin %s", p.name)
 
-    def get_info_dict(self, arg):
+    def get_info_dict(self, arg, plugins=None, options={}):
         res = {}
-        for p, result in self.get_info_iter(arg):
+        for p, result in self.get_info_iter(arg, plugins, options):
             res[p.name] = result
         return res
 
@@ -383,7 +388,22 @@ def main():
     from optparse import OptionParser
 
     parser = OptionParser(usage="usage: %prog [options] [addresses]")
-    parser.add_option("-p", "--plugin", dest="plugins", action="append", default=None)
+    parser.add_option(
+        "-p",
+        "--plugin",
+        dest="plugins",
+        action="append",
+        help="The plugin to run",
+        default=None,
+    )
+    parser.add_option(
+        "-j",
+        "--json",
+        dest="json",
+        action="store_true",
+        help="Output json instead of rendering",
+        default=False,
+    )
     parser.add_option("-l", "--list", dest="list", action="store_true", default=False)
     (options, complete_args) = parser.parse_args()
 
@@ -404,10 +424,17 @@ def main():
             args.append(arg)
 
     plugins = options.plugins or None
+    json_output = []
     for arg in args:
         if len(args) != 1:
             print("=== %s === " % (arg,))
-        p.show_info(arg, plugins=plugins, options=context_options)
+        if options.json:
+            json_output.append({"arg": arg, "data": p.get_info_dict(arg, plugins=plugins, options=context_options)})
+        else:
+            p.show_info(arg, plugins=plugins, options=context_options)
+
+    if options.json:
+        print(json.dumps(json_output))
 
 
 if __name__ == "__main__":
