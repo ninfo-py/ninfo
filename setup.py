@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='ninfo',
-    version='1.0.0',
+    version='1.0.1',
     zip_safe=False,
     description="Plugin based information gathering library",
     packages = find_packages(exclude=["tests"]),
@@ -13,7 +13,7 @@ setup(name='ninfo',
         "IPy",
     ],
     extras_require = {
-        'Splunk' : ['splunk-sdk'],
+        'Splunk' : ['splunk-sdk>=1.6.19'],
     },
     entry_points = {
         'console_scripts': [

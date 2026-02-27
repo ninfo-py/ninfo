@@ -44,7 +44,7 @@ class SplunkBase(PluginBase):
         self.connect()
         logger.debug("Searching splunk for '%s'" % query)
         q = "search " + query
-        rr = self.splunklibresults.ResultsReader(self.s.jobs.export(q))
+        rr = self.splunklibresults.JSONResultsReader(self.s.jobs.export(q, output_mode='json'))
         events = []
         for result in rr:
             if isinstance(result, self.splunklibresults.Message):
