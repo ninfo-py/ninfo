@@ -1,6 +1,11 @@
-from pkg_resources import iter_entry_points
+import sys
 
-__version__ = "1.0.0"
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
+
+__version__ = "1.0.1"
 
 import memcache
 import logging
@@ -159,7 +164,7 @@ class Ninfo:
             self.plugin_modules = plugin_modules
         else:
             self.plugin_modules = {}
-            for ep in iter_entry_points(group="ninfo.plugin"):
+            for ep in entry_points(group="ninfo.plugin"):
                 self.plugin_modules[ep.name] = ep
 
         self.read_config(config_file)
