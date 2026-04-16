@@ -8,7 +8,7 @@ ieeemac==0.5
     # via ninfo (pyproject.toml)
 ipy==1.1
     # via ninfo (pyproject.toml)
-mako==1.2.3
+mako==1.3.11
     # via ninfo (pyproject.toml)
 markupsafe==2.1.1
     # via mako
